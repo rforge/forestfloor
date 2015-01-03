@@ -1,0 +1,17 @@
+{
+    "contents" : "library(randomForest)\nlibrary(forestFloor)\nlibrary(rfFC)\nlibrary(trimTrees)\nobs=2000\nvars=7\nX = data.frame(1:obs)\nfor(i in 1:vars) X[,i] = sample(1:7,obs,replace=T)\nY = apply(X,1,function(x) mean(x))\nY[Y>mean(Y)]=42\nY[Y<mean(Y)]=666\nhist(Y)\nY=as.factor(Y)\n\nfor(i in 1:vars) X[,i]=as.factor(X[,i])\nrfo = cinbag(X,Y,keep.inbag=T,replace=T,ntree=800)\nff = forestFloor2(rfo,X,T)\nplot(ff)\nplot(apply(ff$FCmatrix,1,sum),Y)\ncor(rfo$predicted,apply(ff$FCmatrix,1,sum))\n\nfeatureContributions\nli = getLocalIncrements(rfo,X)\nfc = featureContributions(rfo,li,X)\nfcpred = apply(fc,1,sum) \nplot(predict(rfo,X),fcpred,cex=0.1)\nfcpred\n\n",
+    "created" : 1419500800033.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2912690048",
+    "id" : "14750DEF",
+    "lastKnownWriteTime" : 1419520438,
+    "path" : "~/Documents/PHD/Rlocal/forestFloor/old/testCatVars.R",
+    "project_path" : "old/testCatVars.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

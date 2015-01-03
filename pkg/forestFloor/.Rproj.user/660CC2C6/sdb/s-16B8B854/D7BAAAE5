@@ -1,0 +1,17 @@
+{
+    "contents" : "library(forestFloor)\nlibrary(randomForest)\nlibrary(ffData)\nlibrary(rfFC)\ndata(abalone)\nnames(abalone)\n\nX=abalone[,-9]\nY=abalone[, 9]\nrfo=randomForest(X,Y,keep.inbag=T,ntree=500,mtry=3,sampsize=500,importance=T)\nff = forestFloor(rfo,X)\nplot(ff,colour_by=1,cropXaxes=c(2,4:5),crop_limit=3.8)\nshow3d(ff,order_by_importance=T,size.obs=3,alpha.obs=.6)\nli = getLocalIncrements(rfo,X)\nfc2 = featureContributions(rfo,li,X)\nff2=ff\nmean(abs(ff$FCsCV))\nmean(abs(fc2))\n\nnames(rfo$forest)\nplot(ff,colour_by=2)\nplot(ff,colour_by=5)\nshow3d(ff,x_cols=c(1),y_cols=c(8),z_cols=c(8),order_by_importance=T)\nargs(show3d)\n\nobs=1000\nvars=9\nX=data.frame(1:1000)\nfor(i in 1:vars) X[,i] = as.factor(sample(1:5,obs,replace=T))\nX[,2] = runif(1000)+1\n\nY =apply(X,1,function(a.row) mean(as.numeric(a.row)))\nY = as.numeric(X[,1])\n\nrfo = randomForest(X,Y,keep.inbag=T,ntree=500)\nff = forestFloor2(rfo,X)\n\nplot(ff)\n",
+    "created" : 1418153607704.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1403292872",
+    "id" : "D7BAAAE5",
+    "lastKnownWriteTime" : 1420284473,
+    "path" : "~/Documents/PHD/Rlocal/abaloneex.R",
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

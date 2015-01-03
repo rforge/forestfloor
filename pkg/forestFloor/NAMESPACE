@@ -1,0 +1,10 @@
+useDynLib(forestFloor)
+#exportPattern("^[[:alpha:]]+")
+#import(randomForest,trimTrees,rgl,FNN)
+importFrom(Rcpp, evalCpp)
+export(forestFloor,
+       plot.forestFloor,
+       print.forestFloor,
+       show3d,
+       box.outliers,
+       recTree)
