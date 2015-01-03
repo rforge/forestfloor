@@ -1,2 +1,0 @@
-sample.interval=20000
-"$" "docall" "withOneRestart" "withRestarts" "message" "packageStartupMessage" "fun" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "runHook" "attachNamespace" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "library" "eval" "eval" "sys.source" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "loadNamespace" "withCallingHandlers" "suppressPackageStartupMessages" "code2LazyLoadDB" "makeLazyLoading" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "try" "do_install_source" "do_install" "<Anonymous>" 
