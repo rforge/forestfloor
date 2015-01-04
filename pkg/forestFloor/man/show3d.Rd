@@ -9,8 +9,11 @@ Each axis is provided one variable or feature contribution, a z-axis surface res
 
 }
 \usage{
-show3d(RFCV_object, order_by_importance = F, which_matrices = c("X", "X", "FCsCV"), x_cols = 2, y_cols = 11, z_cols = c(2), plot.surface = T, grid.lines = 30, k = 5, alpha = 0.4, z_scale = 0.7, knnBag = 20, bag.ratio = 0.5)
-}
+show3d(ff, order_by_importance = F, which_matrices = c("X", 
+    "X", "FCmatrix"), x_cols = 1, y_cols = 2, z_cols = c(1:2), 
+    plot.surface = T, grid.lines = 30, k = 5, alpha.surf = 0.4, 
+    alpha.obs = 0.4, size.obs = 3, z_scale = 0.7, knnBag = 20, 
+    bag.ratio = 0.5, avoidFreeType = T, ...) 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{forestFloor_object}{

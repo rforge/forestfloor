@@ -9,12 +9,13 @@ summary comprise N_fold I_repeated cross validation statistics and aggragated im
 a forestFloor_Object is of class forestFloor and is the output of the forestFloor function.
 }
 \usage{
-print(forestfloor_Object)
+print(ff)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{forestFloor_Object}{
-%%     ~~Describe \code{RFCV_object} here~~
+  \item{ff}{
+  ff, forestFloor_Object the output from the forestFloor function
+
 }
 }
 \details{

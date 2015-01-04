@@ -8,15 +8,17 @@ Metod: plot.forestFloor
 Method to plot an object of forestFloor-class. Plot partial feature contributions of the most important variables. Colour gradients can be applied two show possible interactions.
 }
 \usage{
-\method{plot}{forestFloor}(forestFloor.object, colour_by = 1, col_axis = 1, plot_seq = NULL, alpha = "auto", 
+\method{plot}{forestFloor}(ff, colour_by = 1, col_axis = 1, plot_seq = NULL, alpha = "auto", 
     limitX = FALSE, limitY = TRUE, order_by_importance = T, external.col = NULL, 
-    cropXaxes = NULL, crop_limit = 4, ...)
+    cropXaxes = NULL, crop_limit = 4, ...) 
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{forestFloor.object}{
-Computed topology of randomForest-model, the output from the forestFloor function
+  \item{ff}{
+foretFloor-object
+Computed topology of randomForest-model, the output from the forestFloor function \cr
+includes also X and Y and importance data
 }
 
   \item{colour_by}{
