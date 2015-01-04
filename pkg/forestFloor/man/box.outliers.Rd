@@ -17,6 +17,13 @@ numeric vector, matrix, array, data.frame
   \item{limit}{
 limit(SD,standard diviation) any number devating more than limit from mean is an outlier 
 }
+
+\item{normalize}{
+TRUE/FALSE
+should output range be normalized to [0;1]?
+}
+
+
 }
 \details{
 Can be used to box high dimensional data, hence the name box.outliers. Box.outliers is used internally in forestFloor-package to compute colour gradients without assigning unique colours to few outliers. It's a box because the borders univariate/non-interacting.

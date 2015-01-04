@@ -48,8 +48,8 @@ void follow_path(
     if(passed_IB_count>0) {
       current_pred /= (passed_IB_count);
     } else {
-      printf("error no IB \n");
-      current_pred = parent_pred;
+//      printf("error no IB \n");
+//      current_pred = parent_pred;
     }// divide sum of IB_preds with IB_count
   } else { 
     current_pred = nodepred(this_node,i_tree); //reuse node_pred from RF-object, only regression
