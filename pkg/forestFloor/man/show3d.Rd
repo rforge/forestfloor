@@ -38,20 +38,25 @@ vector of one or multiple col indices for x_axis. By default col indices refers 
 
   }
   \item{z_cols}{
-vector of one or multiple col indices for z_axis. By default col indices refers training feature contribution matrix ordered by importance.
+vector of one or multiple col indices for z_axis. By default col indices refers training feature contribution matrix ordered by importance. z_cols would most times hold both or some of the indice numbers from x_cols and y_cols.
   }
   \item{plot.surface}{
 TRUE/FALSE
   }
   \item{grid.lines}{
-integer 2 to many. How many grid.lines in surface response. 30 grid.lines = 900 anchorpoints
+integer 2 to many. How many grid.lines in surface response. 30 grid.lines = 30² = 900 anchorpoints
   }
   \item{k}{
-interger from 1 to many. k amount of nearest neighbors to average response of anchor point. Higher values will smooth surface.
+integer from 1 to many. k amount of nearest neighbors to estimate response of anchor point in surface. Higher values will smooth surface and make it biased. Lower values will be increase noise.
   }
-  \item{alpha}{
+  \item{alpha.surf}{
+a number within [0;1]
 transparency of surface, lower values more transparent
   }
+  \item{alpha.obs}{
+a number within [0;1]
+transparency of observations, lower values more transparent
+  }  
   \item{z_scale}{
 numeric, near zero to larger number. Steapness of surface. Between 0.1 and 10 are reasonable settings. Paremeter is passed directly to rgl-functions.
   }
@@ -63,7 +68,13 @@ numeric number between near zero and one. The ratio of used observations over al
   }
 }
 \details{
-was very simple to implement, in long run would true gaussian weighting paremeter maybe be advantageous. Computing times of bagge nearest neighbor is theoretically poor but practically instancetaously.
+show3d allows to plot data from ff, the forestFloor-object.
+Most users will only need to change following:
+x_cols, y_cols the featurespace axis \cr
+z_cols the feature contributions axis \cr
+...and sometimes these arguments: \cr
+k the smoothness of the surface\cr
+surface was very simple to implement, in long run would true gaussian weighting paremeter maybe be advantageous.
 }
 
 \value{
