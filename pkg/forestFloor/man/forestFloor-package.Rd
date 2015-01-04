@@ -31,33 +31,40 @@ Interpreting random forest classification models using a feature contribution me
 }
 
 \examples{
+
 #simulate data
-obs=1000 
-vars = 6 
-X = data.frame(replicate(vars,rnorm(obs))) 
-Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs)) 
+obs=1000 \cr
+vars = 6 \cr
+X = data.frame(replicate(vars,rnorm(obs)))\cr 
+Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs))\cr 
 
 #grow a forest, remeber to include inbag
-rfo=randomForest(X,Y,keep.inbag=TRUE)
+rfo=randomForest(X,Y,keep.inbag = TRUE)\cr
 
 #compute topology
-ff = forestFloor2(rfo,X)
+ff = forestFloor(rfo,X)\cr
 
 #print forestFloor
-print(ff) 
+print(ff) \cr
 
 #plot partial functions of most important variables first
-plot(ff,plot_seq=NULL,colour_by="dummy, no defined color-template",col_axis=1) 
+plot(ff,plot_seq=NULL,colour_by="dummy, no defined color-template",col_axis=1) \cr
 
 #Non interacting functions are well displayed, whereas X3 and X4 are not
 #by applying different colourgradient, interactions reveal themself 
-plot(ff,plot_seq=NULL,colour_by=3,col_axis=1) 
+plot(ff,plot_seq=NULL,colour_by=3,col_axis=1) \cr
 
 #in 3D the interaction between X3 and X reveals itself completely
-show3d(ff,x_cols=3,y_cols=4,z_cols=3:4) 
+show3d(ff,x_cols=3,y_cols=4,z_cols=3:4) \cr
 
 #although no interaction, a joined additive effect of X1 and X2
 #can also be informative to display in 3D
-plot(ff,plot_seq=NULL,colour_by=4,col_axis=2) #use plot first to define colours
-show3d(ff,x_cols=1,y_cols=2,z_cols=1:2)
+plot(ff,plot_seq=NULL,colour_by=4,col_axis=2) #use plot first to define colours \cr
+show3d(ff,x_cols=1,y_cols=2,z_cols=1:2) \cr
 }
+
+
+\keyword{ multivariate }
+\keyword{ models }
+\keyword{ nonlinear }
+\keyword{ robust }
