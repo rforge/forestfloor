@@ -169,8 +169,6 @@ show3d = function(ff,
          avoidFreeType = T,
          ...) {
   
-  library(rgl) #import entire rgl library
-  
   #retrieve labels for plotting
   xyzlab = with(ff,{
     lab=c()
