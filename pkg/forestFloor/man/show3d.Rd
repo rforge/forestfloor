@@ -15,10 +15,11 @@ show3d(ff, order_by_importance = F, which_matrices = c("X",
     alpha.obs = 0.4, size.obs = 3, z_scale = 0.7, knnBag = 20, 
     bag.ratio = 0.5, avoidFreeType = T, ...) 
 %- maybe also 'usage' for other objects documented here.
+}
 \arguments{
+  
   \item{forestFloor_object}{
   Computed topology of randomForest-model, the output from the forestFloor function of class forestFloor
-%%     ~~Describe \code{RFCV_object} here~~
   }
   \item{order_by_importance}{
    = FALSE: indices refer to variable order in original training data. (good for scripting) \cr
@@ -27,7 +28,6 @@ show3d(ff, order_by_importance = F, which_matrices = c("X",
   \item{which_matrices}{
   a char vector of length 3, with names of object data should be fetched. As default is 
   c("X", "X", "FCsCV"); indices of X_cols and y_cols will be fetched from training set matrix and z_cols from feature contribution matrix. Any matrix in forstFloor.object can theoretically accessesible for plotting. This setting is rarely changed.
-  
   }
   \item{x_cols}{
 vector of one or multiple col indices for x_axis. By default col indices refers training variable matrix ordered by importance.
