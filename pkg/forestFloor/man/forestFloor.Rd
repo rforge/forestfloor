@@ -94,6 +94,7 @@ X = data.frame(replicate(vars,rnorm(obs)))\cr
 Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs))\cr 
 
 #grow a forest, remeber to include inbag
+library(randomForest)
 rfo=randomForest(X,Y,keep.inbag = TRUE)\cr
 
 #compute topology
