@@ -11,4 +11,6 @@ export(forestFloor,
        print.forestFloor,
        show3d,
        box.outliers,
-       recTree)
+       recTree,
+       randomForest,
+       cinbag)
