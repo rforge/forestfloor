@@ -5,10 +5,10 @@
 Box Outliers
 }
 \description{
-squeeze all outliers onto standard.dev-limits and then normalize to [0;1] scale
+squeeze all outliers onto standard.dev-limits and/or normalize to [0;1] scale
 }
 \usage{
-box.outliers(x, limit = 1.5)
+function (x, limit = 1.5, normalize = T)
 }
 \arguments{
   \item{x}{
@@ -19,16 +19,14 @@ limit(SD,standard diviation) any number devating more than limit from mean is an
 }
 }
 \details{
-Can be used to box high dimensional data, hence the name box.outliers. Box.outliers is used internally in forestFloor-package to compute colour gradients without assigning unique colours to few outliers.
+Can be used to box high dimensional data, hence the name box.outliers. Box.outliers is used internally in forestFloor-package to compute colour gradients without assigning unique colours to few outliers. It's a box because the borders univariate/non-interacting.
 }
 \value{
 matrix(n x p) of normalized values
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{
-Søren Havelund Welling, 2014
+Soren Havelund Welling, 2014
 }
 
 \seealso{

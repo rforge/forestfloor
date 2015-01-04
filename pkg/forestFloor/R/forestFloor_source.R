@@ -1,21 +1,20 @@
 
 # Methods:
 #m1 print output
-print.forestFloor = function(ff) {
- cat("this is a forestFloor('ff') object \n
-this object can be plotted in 2D with plot(ff), see help(plot.forestFloor) \n
-this object can be plotted in 3D with show3d(ff), see help(show3d) \n
+print.forestFloor = function(x,...) {
+ cat("this is a forestFloor('x') object \n
+this object can be plotted in 2D with plot(x), see help(plot.forestFloor) \n
+this object can be plotted in 3D with show3d(x), see help(show3d) \n
 \n
-ff contains following internal elements: \n ",ls())
+x contains following internal elements: \n ",with(x,ls()))
 }
 
 #m2 plot output
-plot.forestFloor = function(ff,
+plot.forestFloor = function(x,
                             colour_by=1,
                             col_axis = 1,
                             plot_seq=NULL,
                             alpha="auto",
-                            limitX=FALSE,
                             limitY=TRUE,
                             order_by_importance=T,
                             external.col=NULL,
@@ -28,8 +27,8 @@ plot.forestFloor = function(ff,
   par(mar=c(2,2,1,1),cex=.5) #changing par, narrowing plot margins, smaller points
   
   #short for phys.val and feature contribution in object
-  X = ff$X
-  FCs = ff$FCmatrix
+  X = x$X
+  FCs = x$FCmatrix
   
   #Auto setting transparancy variable. The more obs, the more transparrency
   if(alpha=="auto") alpha = min(max(400/dim(X)[1],0.2),1)
@@ -56,8 +55,8 @@ plot.forestFloor = function(ff,
   par(mfrow=c(plotdims.y,plotdims.x))
   
   ##get importance for plotting
-  imp = ff$importance     #fetch importance
-  imp.ind = ff$imp_ind    #fetch importance ranking/indices
+  imp = x$importance     #fetch importance
+  imp.ind = x$imp_ind    #fetch importance ranking/indices
   
   
   #set default.colour
@@ -113,11 +112,11 @@ plot.forestFloor = function(ff,
   }
   
   #Save this colouring globally, for later 3D plotting
-  if(exists("forestFloor_graphics.env",env=.GlobalEnv)) {
-    assign("obs.indv.colours",colours,env=forestFloor_graphics.env)
+  if(exists("forestFloor_graphics.env",envir=.GlobalEnv)) {
+    assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
   } else {
-    local({forestFloor_graphics.env <- new.env()},env=.GlobalEnv)
-    assign("obs.indv.colours",colours,env=forestFloor_graphics.env)
+    local({forestFloor_graphics.env <- new.env()},envir=.GlobalEnv)
+    assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
     #goto global env, make graphics.env, place colours here
   }
   
@@ -153,7 +152,7 @@ plot.forestFloor = function(ff,
 }
 
 #m3 3d show function
-show3d = function(ff,
+show3d = function(x,
          order_by_importance=F,
          which_matrices=c("X","X","FCmatrix"),
          x_cols=1,y_cols=2,z_cols=c(1:2),
@@ -170,7 +169,7 @@ show3d = function(ff,
          ...) {
   
   #retrieve labels for plotting
-  xyzlab = with(ff,{
+  xyzlab = with(x,{
     lab=c()
     if(!order_by_importance) imp_ind = sort(imp_ind)
     lab$x =       names(get(which_matrices[1]))[imp_ind[x_cols]]
@@ -187,7 +186,7 @@ show3d = function(ff,
   z_cols = cols.fix(z_cols)
   
   
-  axisval = with(ff,{
+  axisval = with(x,{
     axisval=c()
     if(order_by_importance) {
       imp.ind = imp_ind
@@ -224,8 +223,8 @@ show3d = function(ff,
   open3d(...)
 
   # Get colours
-  if(exists("obs.indv.colours",env=forestFloor_graphics.env)) {
-    colpal = get("obs.indv.colours",env=forestFloor_graphics.env)
+  if(exists("obs.indv.colours",envir=forestFloor_graphics.env)) {
+    colpal = get("obs.indv.colours",envir=forestFloor_graphics.env)
   } else {
     colpal = "black"
   }
@@ -249,7 +248,7 @@ show3d = function(ff,
       this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
       sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
       sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
-      out=Fknn.reg(train=sXY,
+      out=knn.reg(train=sXY,
                     test=sgridXY,
                     y=axisval$z[this.boot.ind],
                     k=k,
@@ -259,7 +258,7 @@ show3d = function(ff,
       out = apply(outs,1,mean) # collect predictions
       
       #
-      xlab = names(ff$X)
+      xlab = names(x$X)
     
     
       #plot.surface

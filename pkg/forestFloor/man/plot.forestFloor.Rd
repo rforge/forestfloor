@@ -8,15 +8,14 @@ Metod: plot.forestFloor
 Method to plot an object of forestFloor-class. Plot partial feature contributions of the most important variables. Colour gradients can be applied two show possible interactions.
 }
 \usage{
-\method{plot}{forestFloor}(ff, colour_by = 1, col_axis = 1, plot_seq = NULL, alpha = "auto", 
-    limitX = FALSE, limitY = TRUE, order_by_importance = T, external.col = NULL, 
+\method{plot}{forestFloor}(x, colour_by = 1, col_axis = 1, plot_seq = NULL, alpha = "auto", limitY = TRUE, order_by_importance = T, external.col = NULL, 
     cropXaxes = NULL, crop_limit = 4, ...) 
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{ff}{
-foretFloor-object
+  \item{x}{
+foretFloor-object, also abbrivated ff..
 Computed topology of randomForest-model, the output from the forestFloor function \cr
 includes also X and Y and importance data
 }
@@ -50,6 +49,32 @@ transparency of points,
 "auto" the more points the more transparrent to avoid overplotting
 otherwise manually set as a number [0;1] where 0 is completely transparrent
 }
+
+\item{limitY}{
+TRUE/FLASE, constrain all Yaxis to same limits to ensure relevance of low importance features is not overinterpreted
+}
+
+\item{order_by_importance}{
+TRUE / FALSE
+should plotting and plot_seq be ordered after importance. Most important feature plot first(TRUE)
+}
+
+\item{external.col}{
+a colour vector being sent to col input of genric plot function plot.
+This port allows a user to define new colour gradients. e.g.
+ext.col.vec = rgb(red=box.outliers(Y),green=0.2,blue=0.2,alpha=0.4) \cr
+Where Y is the numeric training target, box.outliers() remove extreme observations and normalize, rgb(). ext.col.vec should in any case have same length as Y.
+}
+
+\item{cropXaxes}{
+a vector of indice numbers of which zooming of x.axis should look away from outliers
+}
+
+\item{crop_limit}{
+a number often between 1.5 and 5, referring limit in std.devs from the mean defining outliers
+if limit = 2, above selected plots will zoom to +/- 2 std.dev of the respective features.
+}
+
 }
 \details{
 The method plot.forestFloor visualizes partial plots of the most important variables first. Partial plotting is also available in randomForest package. But such plots are single thin lines and do not answer the questions;
@@ -67,21 +92,12 @@ The root of computation of the partial interpretations, is that treesbased model
 Interpreting partial feature/variable contributions can be an inspirring or alleuring tool. Plausible causality links comes to mind when interactions are mapped. Remember to also concider reverse and external causality or that sampling was not truely indpendent, e.g. Simpson Paradox. Furthermore oberserved interactions can be due to general statistical issues, such as high colinearity, low sample size and non-independant sampling and more. Often some usaul supects can be ruled out as implausible, while others could be similar plausible and only further testing could possibly tell. Remember these topology maps are created by just another oppurtunistic algorithms, only trying to please its loss function. When data is sparse, randomForest tends to yield topologies with few interactions and with steap sigmoid partial functions. This does not mean the underlying system is exactly as such, just that no more complex interpretations was stable and reproducible across the many treees. Furthermore tree models do not extrapolate outside featurespace of trainingset. Any datapoint outside will be predicted as the most resembling datapoints inside the feature space. The amplitude of suggested partialfunctions is lowered in the near boarder of feature space until et becomes a flatline. This make linear effects look more or less sigmoid. This effect is very well displayed with simulated sinfunctions which have large amplitudes in the center of feature space and small gradually dimishing to no amplitude close to the border of feature space. Also normal distribted variables increase this effect of soft border in the feature space. In high dimensions featurespace of uncorrealted variales will have a low density, and if the variables also are normal distributed, the density of datapoints at the borders of features space will be even more sparse. Personally I think that any data-driven model should return to conservative estimates in low density areas of feature space, which is what randomForest in generally do. Nonetheless, as randomForest is not completely robust, sometimes some complex topologies can emerge by chance in a low density areas of feature space. Here it is important to look at the amount data point driving this specifc topology. With a given prior belief is this a plausible and/or probable topology? On th otherhand when firm topologies are found and in areas of many data points, the rule of large numbers must apply, and this should emphasised more closely.
 }
 
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
-Søren Havelund Welling, 2014-15
-}
-\note{
-%%  ~~further notes~~
+Soren Havelund Welling
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+
 \examples{
 #simulate data
 obs=1000
@@ -90,7 +106,7 @@ X = data.frame(replicate(vars,rnorm(obs)))
 Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs))
 
 #grow a forest, remeber to include inbag
-rfo=randomForest(X,Y,keep.inbag=TRUE)
+rfo=randomForest::randomForest(X,Y,keep.inbag=TRUE)
 
 #compute topology
 ff = forestFloor(rfo,X)

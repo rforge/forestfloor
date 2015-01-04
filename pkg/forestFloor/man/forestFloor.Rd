@@ -10,7 +10,7 @@ The function forestFloor computes a feature contribution matrix from a randomFor
 
 }
 \usage{
-ff = forestFloor(rfo,X,calc_np=FALSE)
+forestFloor(rfo,X,calc_np=FALSE)
 }
 
 \arguments{
@@ -75,7 +75,7 @@ Interpreting random forest classification models using a feature contribution me
 }
 
 \author{
-Søren Havelund Welling, November 2014
+Soren Havelund Welling
 }
 
 \note{
@@ -94,7 +94,7 @@ X = data.frame(replicate(vars,rnorm(obs)))
 Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs))
 
 #grow a forest, remeber to include inbag
-rfo=randomForest(X,Y,keep.inbag = TRUE)
+rfo=randomForest::randomForest(X,Y,keep.inbag = TRUE)
 
 #compute topology
 ff = forestFloor(rfo,X)

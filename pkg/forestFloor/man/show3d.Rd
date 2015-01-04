@@ -9,7 +9,7 @@ Each axis is provided one variable or feature contribution, a z-axis surface res
 
 }
 \usage{
-show3d(ff, order_by_importance = F, which_matrices = c("X", 
+show3d(x, order_by_importance = F, which_matrices = c("X", 
     "X", "FCmatrix"), x_cols = 1, y_cols = 2, z_cols = c(1:2), 
     plot.surface = T, grid.lines = 30, k = 5, alpha.surf = 0.4, 
     alpha.obs = 0.4, size.obs = 3, z_scale = 0.7, knnBag = 20, 
@@ -18,8 +18,9 @@ show3d(ff, order_by_importance = F, which_matrices = c("X",
 }
 \arguments{
   
-  \item{forestFloor_object}{
-  Computed topology of randomForest-model, the output from the forestFloor function of class forestFloor
+  \item{x}{
+  also abbrivated ff. 
+  Computed topology of randomForest-model, the output object from the forestFloor function of class forestFloor
   }
   \item{order_by_importance}{
    = FALSE: indices refer to variable order in original training data. (good for scripting) \cr
@@ -44,7 +45,7 @@ vector of one or multiple col indices for z_axis. By default col indices refers 
 TRUE/FALSE
   }
   \item{grid.lines}{
-integer 2 to many. How many grid.lines in surface response. 30 grid.lines = 30² = 900 anchorpoints
+integer 2 to many. How many grid.lines in surface response. 30 grid.lines = 30^2 = 900 anchorpoints
   }
   \item{k}{
 integer from 1 to many. k amount of nearest neighbors to estimate response of anchor point in surface. Higher values will smooth surface and make it biased. Lower values will be increase noise.
@@ -79,27 +80,13 @@ surface was very simple to implement, in long run would true gaussian weighting 
 
 \value{
 no value
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{
-Søren Havelund Welling
-}
-\note{
-%%  ~~further notes~~
+Soren Havelund Welling
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 #simulate data
 obs=1000 
@@ -108,7 +95,7 @@ X = data.frame(replicate(vars,rnorm(obs)))
 Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs)) 
 
 #grow a forest, remeber to include inbag
-rfo=randomForest(X,Y,keep.inbag=TRUE)
+rfo=randomForest::randomForest(X,Y,keep.inbag=TRUE)
 
 #compute topology
 ff = forestFloor(rfo,X)
