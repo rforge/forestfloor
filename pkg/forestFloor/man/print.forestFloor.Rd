@@ -28,20 +28,19 @@ Soren Havelund Welling
 
 \examples{
 #simulate data
-obs=1000 \cr
-vars = 6 \cr
-X = data.frame(replicate(vars,rnorm(obs)))\cr 
-Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs))\cr 
+obs=1000 
+vars = 6 
+X = data.frame(replicate(vars,rnorm(obs))) 
+Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs)) 
 
 #grow a forest, remeber to include inbag
 library(randomForest)
-rfo=randomForest(X,Y,keep.inbag=TRUE)\cr
+rfo=randomForest(X,Y,keep.inbag=TRUE)
 
 #compute topology
-ff = forestFloor(rfo,X)\cr
+ff = forestFloor(rfo,X)
 
 #print forestFloor
-print(ff) \cr
-
+print(ff) 
 
 }
