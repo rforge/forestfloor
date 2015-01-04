@@ -221,7 +221,7 @@ show3d = function(ff,
   if(is.factor(axisval$z)) axisval$z = as.numeric.factor(axisval$z)
   
   # Open 3d picture,
-  rgl::open3d(...)
+  open3d(...)
 
   # Get colours
   if(exists("obs.indv.colours",env=forestFloor_graphics.env)) {
@@ -249,7 +249,7 @@ show3d = function(ff,
       this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
       sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
       sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
-      out=FNN::knn.reg(train=sXY,
+      out=Fknn.reg(train=sXY,
                     test=sgridXY,
                     y=axisval$z[this.boot.ind],
                     k=k,
@@ -263,15 +263,15 @@ show3d = function(ff,
     
     
       #plot.surface
-      rgl::persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
+      persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
               xlab = xyzlab$x,    ylab = xyzlab$y,    zlab = "feature contribution",
               aspect=c(1, 1, z_scale),
               alpha=alpha.surf,col="#f2f2f2ff",
               ...)
-      rgl::points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
+      points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
   
   }else{  # plot.surface = FASLSE, then data points only
-    rgl::plot3d(axisval$x,axisval$y,axisval$z,
+    plot3d(axisval$x,axisval$y,axisval$z,
                 col=colpal,
                 aspect=c(1, 1, z_scale),
                 size=size.obs,
