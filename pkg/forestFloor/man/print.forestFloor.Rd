@@ -17,6 +17,12 @@ a forestFloor_Object is of class forestFloor and is the output of the forestFloo
   x also abbrivated ff, forestFloor_Object the output from the forestFloor function
 
 }
+
+  \item{...}{
+  ... other arguments passed to generic print function
+
+}
+
 }
 \details{
 prints short help text for usage of a forestFloor_object

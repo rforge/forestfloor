@@ -57,7 +57,11 @@ transparency of surface, lower values more transparent
   \item{alpha.obs}{
 a number within [0;1]
 transparency of observations, lower values more transparent
-  }  
+ }
+  \item{size.obs}{
+A postive number as the size of observations.
+  }
+  
   \item{z_scale}{
 numeric, near zero to larger number. Steapness of surface. Between 0.1 and 10 are reasonable settings. Paremeter is passed directly to rgl-functions.
   }
@@ -67,6 +71,16 @@ integer, 1 to many. How many times should kNN be bootstrapped and estimated for 
   \item{bag.ratio}{
 numeric number between near zero and one. The ratio of used observations over all observations used in each bootstrapped surface estimation. Values less than one, will increase amount above k nearest neighbors used in estimation of each anchorpoint. Nearest neighbors will participate in most estimations and have a high weighting, more distant neighbors will participate gradually more rarely and yield a lower weighting. bag.ratio is therefore a non-metric pseudo gaussian weighting paremeter.
   }
+  
+  \item{avoidFreeType}{
+  avoidFreeType pass specificly to rgl function not to use vector.based labels. \cr
+  freeType make labels look better but must installed externally in operating system and it could take some time.
+  }
+  
+    \item{...}{
+  ... other arguments passed to generic rgl-functions rgl::pers3d and rgl::points3d  or rgl::plot3d when plot_surface=FALSE.
+  }
+  
 }
 \details{
 show3d allows to plot data from ff, the forestFloor-object.

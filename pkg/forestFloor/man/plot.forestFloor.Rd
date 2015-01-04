@@ -75,6 +75,10 @@ a number often between 1.5 and 5, referring limit in std.devs from the mean defi
 if limit = 2, above selected plots will zoom to +/- 2 std.dev of the respective features.
 }
 
+\item{...}{
+... other arguments passed to generic plot functions
+}
+
 }
 \details{
 The method plot.forestFloor visualizes partial plots of the most important variables first. Partial plotting is also available in randomForest package. But such plots are single thin lines and do not answer the questions;
