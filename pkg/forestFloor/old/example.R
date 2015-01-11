@@ -11,7 +11,7 @@ rfo=randomForest(X,Y,keep.inbag = TRUE)
 
 
 #compute topology
-ff = forestFloor2(rfo,X)
+ff = forestFloor(rfo,X)
 
 
 #print forestFloor
@@ -28,7 +28,7 @@ plot(ff,plot_seq=NULL,colour_by=3,col_axis=1)
 
 
 #in 3D the interaction between X3 and X reveals itself completely
-show3d(ff,x_cols=3,y_cols=4,z_cols=3:4) 
+show3d(ff,x_cols=3,y_cols=4,z_cols=3:4,k=15) 
 
 
 #although no interaction, a joined additive effect of X1 and X2
