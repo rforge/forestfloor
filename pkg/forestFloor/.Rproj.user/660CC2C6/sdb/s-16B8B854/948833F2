@@ -1,0 +1,17 @@
+{
+    "contents" : "#simulate data\nobs=3000 \nvars = 6 \n\nX = data.frame(replicate(vars,rnorm(obs)))\nY = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.2 * rnorm(obs))\n\n\n#grow a forest, remeber to include inbag\nrfo=randomForest(X,Y,keep.inbag = TRUE)\n\n\n#compute topology\nff = forestFloor2(rfo,X)\n\n\n#print forestFloor\nprint(ff) \n\n\n#plot partial functions of most important variables first\nplot(ff,plot_seq=NULL,colour_by=\"dummy, no defined color-template\",col_axis=1) \n\n\n#Non interacting functions are well displayed, whereas X3 and X4 are not\n#by applying different colourgradient, interactions reveal themself \nplot(ff,plot_seq=NULL,colour_by=3,col_axis=1) \n\n\n#in 3D the interaction between X3 and X reveals itself completely\nshow3d(ff,x_cols=3,y_cols=4,z_cols=3:4) \n\n\n#although no interaction, a joined additive effect of X1 and X2\n#can also be informative to display in 3D\nplot(ff,plot_seq=NULL,colour_by=4,col_axis=2) #use plot first to define colours \\cr\nshow3d(ff,x_cols=1,y_cols=2,z_cols=1:2) \n",
+    "created" : 1419604287322.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3494291342",
+    "id" : "948833F2",
+    "lastKnownWriteTime" : 1420152037,
+    "path" : "~/Documents/PHD/Rlocal/forestFloor/old/example.R",
+    "project_path" : "old/example.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

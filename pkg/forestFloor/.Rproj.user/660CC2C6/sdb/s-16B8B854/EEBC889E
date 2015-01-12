@@ -1,0 +1,16 @@
+{
+    "contents" : "\\name{print.forestFloor}\n\\alias{print.forestFloor}\n%- Also NEED an '\\alias' for EACH other topic documented here.\n\\title{\nprint summary of forestFloor.Object\n}\n\\description{\nsummary comprise N_fold I_repeated cross validation statistics and aggragated importance of variables.\na forestFloor_Object is of class forestFloor and is the output of the forestFloor function.\n}\n\\usage{\nprint(forestfloor_Object)\n}\n%- maybe also 'usage' for other objects documented here.\n\\arguments{\n  \\item{forestFloor_Object}{\n%%     ~~Describe \\code{RFCV_object} here~~\n}\n}\n\\details{\nprints short help text for usage of a forestFloor_object\n}\n\n\\author{\nSoren Havelund Welling\n}\n\n\n\\examples{\n#simulate data\nobs=1000 \\cr\nvars = 6 \\cr\nX = data.frame(replicate(vars,rnorm(obs)))\\cr \nY = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs))\\cr \n\n#grow a forest, remeber to include inbag\nrfo=randomForest(X,Y,keep.inbag=TRUE)\\cr\n\n#compute topology\nff = forestFloor2(rfo,X)\\cr\n\n#print forestFloor\nprint(ff) \\cr\n\n\n}",
+    "created" : 1420286760592.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1550283863",
+    "id" : "EEBC889E",
+    "lastKnownWriteTime" : 1420328679,
+    "path" : "~/Documents/PHD/Rlocal/svnff/forestfloor/pkg/forestFloor/man/print.forestFloor.Rd",
+    "project_path" : "man/print.forestFloor.Rd",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_doc"
+}
