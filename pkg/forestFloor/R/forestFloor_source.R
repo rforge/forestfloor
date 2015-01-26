@@ -152,21 +152,22 @@ plot.forestFloor = function(x,
 }
 
 #m3 3d show function
+#m3 3d show function
 show3d = function(x,
-         order_by_importance=FALSE,
-         which_matrices=c("X","X","FCmatrix"),
-         x_cols=1,y_cols=2,z_cols=c(1:2),
-         plot.surface=TRUE,
-         grid.lines=30,
-         k=5,
-         alpha.surf=.4,
-         alpha.obs=.4,
-         size.obs=3,
-         z_scale=.7,
-         knnBag=20,
-         bag.ratio=0.5,
-         avoidFreeType = T,
-         ...) {
+                  order_by_importance=F,
+                  which_matrices=c("X","X","FCmatrix"),
+                  x_cols=1,y_cols=2,z_cols=c(1:2),
+                  plot.surface=T,
+                  grid.lines=30,
+                  k=5,
+                  alpha.surf=.4,
+                  alpha.obs=.4,
+                  size.obs=3,
+                  z_scale=.7,
+                  knnBag=20,
+                  bag.ratio=0.5,
+                  avoidFreeType = T,
+                  ...) {
   
   #retrieve labels for plotting
   xyzlab = with(x,{
@@ -195,22 +196,22 @@ show3d = function(x,
       y_cols = ind_by_imp(y_cols,imp.ind)
       z_cols = ind_by_imp(z_cols,imp.ind)
     }
-      
-      if(!which_matrices[1]=="FCmatrix") {
-        axisval$x =          get(which_matrices[1])[,x_cols[1]]
-      }else{
-        axisval$x =    apply(get(which_matrices[1])[,x_cols],1,mean)
-      }
-      if(!which_matrices[2]=="FCmatrix") {
-        axisval$y       =    get(which_matrices[2])[,y_cols[1]]
-      }else{
-        axisval$y =    apply(get(which_matrices[2])[,y_cols],1,mean)
-      }
-      if(!which_matrices[3]=="FCmatrix") {
-        axisval$z          = get(which_matrices[3])[,z_cols[1]]  
-      }else{
-        axisval$z    = apply(get(which_matrices[3])[,z_cols],1,mean)
-      }
+    
+    if(!which_matrices[1]=="FCmatrix") {
+      axisval$x =          get(which_matrices[1])[,x_cols[1]]
+    }else{
+      axisval$x =    apply(get(which_matrices[1])[,x_cols],1,mean)
+    }
+    if(!which_matrices[2]=="FCmatrix") {
+      axisval$y       =    get(which_matrices[2])[,y_cols[1]]
+    }else{
+      axisval$y =    apply(get(which_matrices[2])[,y_cols],1,mean)
+    }
+    if(!which_matrices[3]=="FCmatrix") {
+      axisval$z          = get(which_matrices[3])[,z_cols[1]]  
+    }else{
+      axisval$z    = apply(get(which_matrices[3])[,z_cols],1,mean)
+    }
     return(axisval)
   })
   
@@ -221,7 +222,7 @@ show3d = function(x,
   
   # Open 3d picture,
   open3d(...)
-
+  
   # Get colours
   if(exists("obs.indv.colours",envir=forestFloor_graphics.env)) {
     colpal = get("obs.indv.colours",envir=forestFloor_graphics.env)
@@ -229,7 +230,7 @@ show3d = function(x,
     colpal = "black"
   }
   
-    
+  
   #should surfe of data also be plotted
   if(plot.surface) { 
     #compute grid around data
@@ -238,47 +239,58 @@ show3d = function(x,
     ite.val=apply(XY,2,get.seq)
     gridXY=as.matrix(expand.grid(ite.val[,1],ite.val[,2]),dimnames=NULL) #grid coordinates
     g.points = grid.lines^2
-#     
-#     #rescale variables to equal to achieve equal influence in kNN-model
-#     sXY = scale(XY) #scale XY
-#     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #scale grid exactly as XY
-      
+    #     
+    #     #rescale variables to equal to achieve equal influence in kNN-model
+    #     sXY = scale(XY) #scale XY
+    #     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #scale grid exactly as XY
+    
     ##bootstrap knn estimated surface, giving gaussian-isch distance weigths
-    outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
-      this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
-      sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
-      sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
-      out=knn.reg(train=sXY,
-                    test=sgridXY,
-                    y=axisval$z[this.boot.ind],
+    out = kNN.surf(knnBag=knnBag,
+                   XY=XY,
+                   gridXY=gridXY,
+                   k=k,
+                   y=axisval$z,
+                   bag.ratio = bag.ratio
+    )
+    
+    #test the self-explainance of surface
+    out2 = kNN.surf(knnBag=knnBag,
+                    XY=XY,
+                    gridXY=XY,
                     k=k,
-                    algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
-      })
+                    y=axisval$z,
+                    bag.ratio = bag.ratio
+    )
     
-      out = apply(outs,1,mean) # collect predictions
-      
-      #
-      xlab = names(x$X)
+    SSerrorSurf = sum((axisval$z-out2)^2)
+    SSmodelSurf = sum((out2)^2)
+    R2 = SSmodelSurf / (SSmodelSurf + SSerrorSurf)
+    cat("fit of this surface plot is",round(R2,3),"% \n")
+    
+    # #debugging break
+    # return(mget(ls()))
+    
+    xlab = names(x$X)
     
     
-      #plot.surface
-      persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
-              xlab = xyzlab$x,    ylab = xyzlab$y,    zlab = "feature contribution",
-              aspect=c(1, 1, z_scale),
-              alpha=alpha.surf,col="#f2f2f2ff",
-              ...)
-      points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
-  
+    #plot.surface
+    persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
+            xlab = xyzlab$x,    ylab = xyzlab$y,    zlab = "feature contribution",
+            aspect=c(1, 1, z_scale),main=paste("surf-fit=",round(R2,3),"%"),
+            alpha=alpha.surf,col="#f2f2f2ff",
+            ...)
+    points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
+    
   }else{  # plot.surface = FASLSE, then data points only
     plot3d(axisval$x,axisval$y,axisval$z,
-                col=colpal,
-                aspect=c(1, 1, z_scale),
-                size=size.obs,
-                alpha=alpha.obs,
-                xlab = xyzlab$x,
-                ylab = xyzlab$y,
-                zlab = "feature contribution",
-                ...)
+           col=colpal,
+           aspect=c(1, 1, z_scale),
+           size=size.obs,
+           alpha=alpha.obs,
+           xlab = xyzlab$x,
+           ylab = xyzlab$y,
+           zlab = "feature contribution",
+           ...)
   }            
 }
 
