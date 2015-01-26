@@ -13,4 +13,5 @@ export(forestFloor,
        print.forestFloor,
        show3d,
        box.outliers,
-       recTree)
+       recTree,
+       vec.plot)

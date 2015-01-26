@@ -153,10 +153,10 @@ plot.forestFloor = function(x,
 
 #m3 3d show function
 show3d = function(x,
-         order_by_importance=F,
+         order_by_importance=FALSE,
          which_matrices=c("X","X","FCmatrix"),
          x_cols=1,y_cols=2,z_cols=c(1:2),
-         plot.surface=T,
+         plot.surface=TRUE,
          grid.lines=30,
          k=5,
          alpha.surf=.4,
@@ -283,6 +283,56 @@ show3d = function(x,
 }
 
 
+
+
+#m4 - show vec plot 2D and 3D
+
+vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY=F,forestFloor.col=FALSE) {
+
+#compute grid range
+d = length(i.var)
+scales = lapply(i.var, function(i) {
+  rXi = range(X[,i])
+  span = abs(rXi[2]-rXi[1])*zoom/2
+  center = mean(rXi)
+  seq(center-span,center+span,length.out=grid.lines)
+})
+
+#expand grid range to a n-dimensional VEC-space and predict by model
+anchor.points = as.matrix(expand.grid(scales),dimnames=NULL)
+Xgeneralized=apply(X,2,VEC.function)    
+Xtest.vec = data.frame(t(replicate(dim(anchor.points)[1],Xgeneralized)))
+Xtest.vec[,i.var] = anchor.points
+yhat.vec = predict(model,Xtest.vec)
+
+#add observations to VEC-space
+values.to.plot=X[,i.var]
+Xmean=apply(X,2,VEC.function)
+Xtest.obs = data.frame(t(replicate(dim(X)[1],Xgeneralized)))
+Xtest.obs[,i.var] = values.to.plot
+yhat.obs =  predict(model, Xtest.obs)
+
+#defining one colour for all observations or import external colours
+if(forestFloor.col) {col = with(forestFloor_graphics.env,obs.indv.colours)} else {col="#20202050"}
+
+#plot VEC-space versus predictions (only 2D and 3D plot supported)
+if(d==2) { #if 2D VEC space
+  plot3d(x=values.to.plot[,1],y=values.to.plot[,2],z=yhat.obs,
+         xlab=names(X)[i.var][1],ylab=names(X)[i.var][2],main="VEC-SURFACE",col=col)
+  surface3d(x=scales[[1]],
+            y=scales[[2]],
+            z=yhat.vec,col="#404080",size=4,alpha=0.4)
+}else{ #otherwise if 1D VEC-space
+  if(limitY) {ylim = range(rfo$y)} else {ylim = NULL}
+  plot(x=scales[[1]],y=yhat.vec,col="red",type="l",xlab=names(X)[i.var][1],ylim=ylim)
+  points(values.to.plot,yhat.obs)
+}
+}
+
+
+
+
+
 #sf5 scale data and grid, to allow knn 
 scale.by = function(scale.this,by.this) {
   center = attributes(by.this)$'scaled:center'
@@ -310,6 +360,20 @@ box.outliers = function(x,limit=1.5,normalize=T) {
     x = sx * attributes(sx)$"scaled:scale" + attributes(sx)$"scaled:center"
     return(x)
   }
+}
+
+#sf7  - calculate deviance from surface
+surf.error = function() {
+  outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
+    this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
+    sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
+    sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
+    out=knn.reg(train=sXY,
+                test=sgridXY,
+                y=axisval$z[this.boot.ind],
+                k=k,
+                algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
+  })
 }
 
 forestFloor = function(rfo,X,calc_np=FALSE) { 
