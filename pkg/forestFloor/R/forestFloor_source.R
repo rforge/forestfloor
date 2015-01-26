@@ -154,10 +154,10 @@ plot.forestFloor = function(x,
 #m3 3d show function
 #m3 3d show function
 show3d = function(x,
-                  order_by_importance=F,
+                  order_by_importance=FALSE,
                   which_matrices=c("X","X","FCmatrix"),
                   x_cols=1,y_cols=2,z_cols=c(1:2),
-                  plot.surface=T,
+                  plot.surface=TRUE,
                   grid.lines=30,
                   k=5,
                   alpha.surf=.4,
