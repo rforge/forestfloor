@@ -374,18 +374,40 @@ box.outliers = function(x,limit=1.5,normalize=T) {
   }
 }
 
-#sf7  - calculate deviance from surface
-surf.error = function() {
+# #sf7  - calculate deviance from surface
+# surf.error = function() {
+#   outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
+#     this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
+#     sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
+#     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
+#     out=knn.reg(train=sXY,
+#                 test=sgridXY,
+#                 y=axisval$z[this.boot.ind],
+#                 k=k,
+#                 algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
+#   })
+# }
+
+#sf7 estimate surface with kNNbag, depends on "sf5 - scale.by"
+kNN.surf = function(knnBag,
+                    XY,
+                    gridXY,
+                    k,
+                    y,
+                    bag.ratio=.8,
+                    replace=T) {
   outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
     this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
     sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
     out=knn.reg(train=sXY,
                 test=sgridXY,
-                y=axisval$z[this.boot.ind],
+                y=y[this.boot.ind],
                 k=k,
                 algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
   })
+  out = apply(outs,1,mean) # collect predictions
+  return(out)
 }
 
 forestFloor = function(rfo,X,calc_np=FALSE) { 

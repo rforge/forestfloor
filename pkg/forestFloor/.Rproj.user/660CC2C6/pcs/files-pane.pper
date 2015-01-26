@@ -1,6 +1,10 @@
 {
-    "path" : "~/Documents/PHD/Rlocal/svnff/forestfloor/pkg/forestFloor/man",
+    "path" : "~/Documents/PHD/Rlocal/ForstArticle",
     "sortOrder" : [
+        {
+            "ascending" : false,
+            "columnIndex" : 4
+        },
         {
             "ascending" : true,
             "columnIndex" : 2
