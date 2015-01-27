@@ -5,6 +5,7 @@ importFrom(Rcpp, evalCpp)
 importFrom(randomForest, randomForest)
 importFrom(trimTrees, cinbag)
 import(rgl)
+importFrom(kknn,train.kknn)
 importFrom(FNN,knn.reg)
 S3method(plot,forestFloor)
 S3method(print,forestFloor)
@@ -14,4 +15,6 @@ export(forestFloor,
        show3d,
        box.outliers,
        recTree,
-       vec.plot)
+       vec.plot,
+       convolute_ff
+       )

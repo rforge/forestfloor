@@ -151,8 +151,7 @@ plot.forestFloor = function(x,
   par(pars)
 }
 
-#m3 3d show function
-#m3 3d show function
+#f1 3d show function
 show3d = function(x,
                   order_by_importance=FALSE,
                   which_matrices=c("X","X","FCmatrix"),
@@ -297,8 +296,7 @@ show3d = function(x,
 
 
 
-#m4 - show vec plot 2D and 3D
-
+#f2 - show vec plot 2D and 3D
 vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY=F,forestFloor.col=FALSE) {
 
 #compute grid range
@@ -335,13 +333,40 @@ if(d==2) { #if 2D VEC space
             y=scales[[2]],
             z=yhat.vec,col="#404080",size=4,alpha=0.4)
 }else{ #otherwise if 1D VEC-space
-  if(limitY) {ylim = range(rfo$y)} else {ylim = NULL}
+  if(limitY) {ylim = range(model$y)} else {ylim = NULL}
   plot(x=scales[[1]],y=yhat.vec,col="red",type="l",xlab=names(X)[i.var][1],ylim=ylim)
   points(values.to.plot,yhat.obs)
 }
 }
 
 
+
+#f3 input a forestFloor object, computes convoluted feature contributions with kknn
+#outout a new ff object as input with attached ff$FCfit
+#kknn arguments can be accessed directly from this wrapper by userArgs.kknn
+#if conflicting with wrappe
+convolute_ff = function(ff,
+                        these.vars=NULL,
+                        k.fun=function() round(sqrt(n.obs)/2),
+                        userArgs.kknn = alist(kernel="gaussian")) {
+  
+  n.obs=dim(ff$X)[1]
+  n.vars=dim(ff$X)[2]
+  k=k.fun()
+  if(is.null(these.vars)) these.vars = 1:n.vars
+  
+  #merge user and wrapper args
+  defaultArgs.kknn = alist(formula=fc~.,data=Data,kmax=k,kernel="gaussian")
+  kknn.args=append.overwrite.alists(userArgs.kknn,defaultArgs.kknn)
+  
+  #iterate for seleceted variables
+  ff$FCfit = sapply(these.vars, function(this.var) {
+    Data = data.frame(fc=ff$FCmatrix[,this.var],x=ff$X[,this.var])
+    knn.obj = do.call("train.kknn",kknn.args)$fitted.values
+    knn.obj[[length(knn.obj)]]
+  })
+  ff  
+}
 
 
 
@@ -409,6 +434,20 @@ kNN.surf = function(knnBag,
   out = apply(outs,1,mean) # collect predictions
   return(out)
 }
+
+
+
+#sf8 neat function to help increase adaptability of wrappers, default args defined by wrapper. User can 
+#input an alist and by this function the wrapper will append new args and overwrite conflicting arguments.
+#one set of args either user or defaults are set as master
+append.overwrite.alists= function(masterArgs,slaveArgs) {
+  slaveArgs.to.overwrite = names(slaveArgs) %in% names(masterArgs)
+  for(i in which(slaveArgs.to.overwrite))  slaveArgs[i] = masterArgs[match(names(slaveArgs[i]),names(masterArgs))]
+  masterArgs.to.append = !(names(masterArgs) %in% names(slaveArgs))
+  c(slaveArgs,masterArgs[masterArgs.to.append])
+}
+
+
 
 forestFloor = function(rfo,X,calc_np=FALSE) { 
   
