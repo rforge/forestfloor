@@ -16,5 +16,6 @@ export(forestFloor,
        box.outliers,
        recTree,
        vec.plot,
-       convolute_ff
-       )
+       convolute_ff,
+       convolute_ff2,
+       convolute_grid)

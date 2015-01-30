@@ -2,8 +2,9 @@
 \alias{convolute_ff}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Convolution of featureContributions by corresponding features with kknn-package}
+Convolution SPECIFIC set of featureContributions by corresponding features with kknn-package}
 \description{
+Can do any order of convolution, whereas convolute_ff rather do batches of first order convolution.
 With kNN- gaussian kernel and LOO cross-validation.
 }
 \usage{
