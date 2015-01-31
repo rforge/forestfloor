@@ -497,9 +497,15 @@ box.outliers = function(x,limit=1.5,normalize=T) {
     sx = sx - min(sx)
     sx = sx / sx.span
   } else {
-    sx = sx * attributes(sx)$"scaled:scale" + attributes(sx)$"scaled:center"
+    obs=attributes(sx)$"dim"[1]
+    if(obs>1) {
+    sx = sx * t(replicate(obs,attributes(sx)$"scaled:scale")) +
+              t(replicate(obs,attributes(sx)$"scaled:center"))
+    } else {
+    sx  = sx * attributes(sx)$"scaled:scale" + attributes(sx)$"scaled:center" 
+    }
   }
-  
+
   if(class(x)=="data.frame") {
     sx = as.data.frame(sx,row.names=row.names(x))
     names(sx) = names(x)
