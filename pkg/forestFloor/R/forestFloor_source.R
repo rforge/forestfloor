@@ -498,7 +498,7 @@ box.outliers = function(x,limit=1.5,normalize=T) {
     sx = sx / sx.span
   } else {
     obs=attributes(sx)$"dim"[1]
-    if(dim(x)[2]>1) {
+    if(dim(sx)[2]>1) {
     sx = sx * t(replicate(obs,attributes(sx)$"scaled:scale")) +
               t(replicate(obs,attributes(sx)$"scaled:center"))
     } else {
