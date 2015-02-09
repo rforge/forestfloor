@@ -18,4 +18,5 @@ export(forestFloor,
        vec.plot,
        convolute_ff,
        convolute_ff2,
-       convolute_grid)
+       convolute_grid,
+       show3d_new)

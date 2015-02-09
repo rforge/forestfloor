@@ -147,11 +147,74 @@ plot.forestFloor = function(x,
       ...
     )
   }
-  #print(pars$pin)
+  pars = with(pars,if(exists("pin")) {
+    rm(pin)
+    return(mget(ls()))
+    }) 
   par(pars)
 }
 
-#f1 3d show function
+#f1a 3d show function
+show3d_new = function(ff,         #"forestFloor" class object
+                      Xi  = 1:2,  # indices of feature columns
+                      FCi = NULL,  # indices of feature contributions columns
+                      col = "#12345678",     #points colour or colour palette, can also be passed as promise in plot.rgl.args
+                      sortByImportance = T,  #should indices count 'variable importance' order or matrix/data.frame order
+                      surface=T,    #should a surface be plotted also
+                      combineFC = sum,  #how should feature contributions be combined
+                      zoom=1.2,       #grid can be expanded in all directions by a factor ,zoom
+                      grid.lines=30,  #how many grid lines should be used
+                      limit=3, #grid does not concider outliers, outside limit of e.g. 3 sd deviations
+                      kknnGrid.args = alist(),  #any possiple argument to kknn package, overwrites this wrapper
+                      plot.rgl.args = alist(),  #same to rgl::plot3d, overrides this wrapper, defines plotting space
+                      surf.rgl.args = alist()   #same to rgl::persp3d, overrides this wraper, added to plot3d
+                      ) {
+  if(class(ff)!="forestFloor") stop("ff, must be of class forestFloor")
+  if(length(Xi)!=2) {
+    warning("Xi should be of length 2, if 1 first elements is used twice, if >2 only two first elements is used")
+    if(length(Xi) > 2) Xi=Xi[1:2] else Xi = Xi[c(1,1)]
+  }
+  if(!all(Xi %in% 1:dim(ff$X)[2]))   stop( "input  Xi points to columns indices out of range of feature matrix ff$X")
+  if(is.null(FCi)) FCi=Xi
+  if(!all(FCi %in% 1:dim(ff$FCmatrix)[2]) && length(FCi)>0) stop("input FCi points to columns indices out of range of feature matrix ff$X")
+  
+  #fetch selected coloums from object
+  X = ff$X[,Xi]
+  FC = ff$FCmatrix[,FCi]
+  
+  #define xy coordinates from features and z from feature contributions
+  xaxis = X[,1]
+  yaxis = X[,2]
+  if(length(FCi)==1) zaxis = FC else zaxis = apply(FC,1,combineFC) #if multiple FCis these will summed to one value.
+  
+  #fixing categorical features
+  as.numeric.factor <- function(x) {match(x,levels(x))}
+  if(is.factor(xaxis)) xaxis = as.numeric.factor(xaxis)
+  if(is.factor(yaxis)) yaxis = as.numeric.factor(yaxis)
+  if(is.factor(zaxis)) zaxis = as.numeric.factor(zaxis)
+
+ 
+  
+  #plotting points
+  #merge current/user, wrapper arguments for plot3d in proritized order
+  wrapper_arg = list(x=xaxis, y=yaxis, z=zaxis, col=col,
+                xlab=names(X)[1],ylab=names(X)[2],zlab=paste(names(ff$X[,FCi]),collapse=" - "),
+                alpha=.4,size=3,scale=.7,avoidFreeType = T,add=FALSE)
+  calling_arg = append.overwrite.alists(plot.rgl.args,wrapper_arg)
+  do.call("plot3d",args=calling_arg)
+  
+  #plotting surface
+  #merge arguments again
+  if(surface) {
+    #compute grid
+  grid = convolute_grid(ff, Xvars=Xi, FCvars=FCi, limit=limit, grid=grid.lines, zoom=zoom,  userArgs.kknn = kknnGrid.args)
+  wrapper_arg = alist(x=unique(grid[,2]),y=unique(grid[,3]),z=grid[,1],add=TRUE,alpha=0.4) #args defined in this wrapper function
+  calling_arg = append.overwrite.alists(surf.rgl.args,wrapper_arg)   
+  do.call("persp3d",args=calling_arg)
+  }
+}
+
+#f1b 3d show function
 show3d = function(x,
                   order_by_importance=FALSE,
                   which_matrices=c("X","X","FCmatrix"),
