@@ -72,14 +72,16 @@ ff = forestFloor(rfo,X)
 
 #convolute the interacting feature contributions by their feature to understand relationship
 fc34_convoluted = convolute_ff2(ff,Xvars=3:4,FCvars=3:4,  #arguments for the wrapper
-                                userArgs.kknn = alist(kernel="gaussian",k=25)) #arguments for train.kknn
+                  userArgs.kknn = alist(kernel="gaussian",k=25)) #arguments for train.kknn
 
 #plot the joined convolution
 plot3d(ff$X[,3],ff$X[,4],fc34_convoluted,
        main="convolution of two feature contributions by their own vaiables",
        #add some colour gradients to ease visualization
-       col=rgb(.7*box.outliers(fc34_convoluted), #box.outliers squese all observations in a 2 std.dev box
-               .7*box.outliers(ff$X[,3]),        #univariately for a vector or matrix and normalize to [0;1]
+       #box.outliers squese all observations in a 2 std.dev box
+       #univariately for a vector or matrix and normalize to [0;1]
+       col=rgb(.7*box.outliers(fc34_convoluted), 
+               .7*box.outliers(ff$X[,3]),        
                .7*box.outliers(ff$X[,4]))
        )
 }

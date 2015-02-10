@@ -104,8 +104,10 @@ plot(ff,plot_seq=NULL,colour_by=1,col_axis=1,order_by_importance=TRUE)
 #the pure feature contributions
 plot3d(ff$X[,2],ff$X[,3],apply(ff$FCmatrix[,2:3],1,sum),
        #add some colour gradients to ease visualization
-       col=rgb(   box.outliers(ff$X[,2])^3, #box.outliers squese all observations in a 2 std.dev box
-               1-abs(box.outliers(ff$X[,2])-0.5)^(1/3),        #univariately for a vector or matrix and normalize to [0;1]
+        #box.outliers squese all observations in a 2 std.dev box
+        #univariately for a vector or matrix and normalize to [0;1]
+       col=rgb(box.outliers(ff$X[,2])^3,
+               1-abs(box.outliers(ff$X[,2])-0.5)^(1/3),        
                1- box.outliers(ff$X[,2])^(1/3)
        )
 )
@@ -122,10 +124,19 @@ plot3d(grid23[,2],grid23[,3],grid23[,1],alpha=0.3,col=c("black"),add=TRUE)
 ## and we se that their is almost no variance out of the surface, thus is FC2 and FC3
 ## well explained by the feature context of both X3 and X4
 
-### next example show how to plot a 3D grid + feature contribution, this 4D application is very experimental 
+### next example show how to plot a 3D grid + feature contribution
+## this 4D application is very experimental 
 
 #Make grid of three effects, 25^3 = 15625 anchor points
-grid123 = convolute_grid(ff,Xvars=c(1:3),FCvars=c(1:3),userArgs.kknn= alist(k=100,kernel="gaus",distance=1),grid=25,zoom=1.2)
+grid123 = convolute_grid(ff,
+                         Xvars=c(1:3),
+                         FCvars=c(1:3),
+                         userArgs.kknn = alist(
+                                          k= 100,
+                                          kernel = "gaussian",
+                                          distance = 1),
+                         grid=25,
+                         zoom=1.2)
 
 #Select a dimension to place in layers
 uni2 = unique(grid123[,2])  #2 points to X1 and FC1

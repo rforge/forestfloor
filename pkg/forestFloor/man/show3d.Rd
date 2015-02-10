@@ -13,7 +13,7 @@ show3d(x, order_by_importance = FALSE, which_matrices = c("X",
     "X", "FCmatrix"), x_cols = 1, y_cols = 2, z_cols = c(1:2), 
     plot.surface = TRUE, grid.lines = 30, k = 5, alpha.surf = 0.4, 
     alpha.obs = 0.4, size.obs = 3, z_scale = 0.7, knnBag = 20, 
-    bag.ratio = 0.5, avoidFreeType = T, ...) 
+    bag.ratio = 0.5, avoidFreeType = TRUE, ...) 
 %- maybe also 'usage' for other objects documented here.
 }
 \arguments{

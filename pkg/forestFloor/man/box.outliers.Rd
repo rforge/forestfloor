@@ -8,7 +8,7 @@ Box Outliers
 squeeze all outliers onto standard.dev-limits and/or normalize to [0;1] scale
 }
 \usage{
-box.outliers(x, limit = 1.5, normalize = T)
+box.outliers(x, limit = 1.5, normalize = TRUE)
 }
 \arguments{
   \item{x}{

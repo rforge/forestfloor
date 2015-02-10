@@ -1,6 +1,5 @@
 \name{plot.forestFloor}
 \alias{plot.forestFloor}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Metod: plot.forestFloor
 }
@@ -8,8 +7,17 @@ Metod: plot.forestFloor
 Method to plot an object of forestFloor-class. Plot partial feature contributions of the most important variables. Colour gradients can be applied two show possible interactions.
 }
 \usage{
-\method{plot}{forestFloor}(x, colour_by = 1, col_axis = 1, plot_seq = NULL, alpha = "auto", limitY = TRUE, order_by_importance = T, external.col = NULL, 
-    cropXaxes = NULL, crop_limit = 4, ...) 
+\method{plot}{forestFloor}(x,
+                           colour_by = 1,
+                           col_axis = 1,
+                           plot_seq = NULL,
+                           alpha = "auto",
+                           limitY = TRUE,
+                           order_by_importance = TRUE,
+                           external.col = NULL,
+                           cropXaxes = NULL,
+                           crop_limit = 4,
+                           ...) 
 }
 
 %- maybe also 'usage' for other objects documented here.

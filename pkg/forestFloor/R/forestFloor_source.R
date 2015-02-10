@@ -16,7 +16,7 @@ plot.forestFloor = function(x,
                             plot_seq=NULL,
                             alpha="auto",
                             limitY=TRUE,
-                            order_by_importance=T,
+                            order_by_importance=TRUE,
                             external.col=NULL,
                             cropXaxes=NULL,
                             crop_limit=4,
@@ -41,7 +41,7 @@ plot.forestFloor = function(x,
   as.numeric.factor <- function(x) {match(x,levels(x))}
   for(i in 1:dim(X)[2]) {
     if(is.factor(X[,i])) {
-      jitter.template[i]=T
+      jitter.template[i]=TRUE
       this.fac=as.numeric.factor(X[,i])
       X[,i] = this.fac
     }
@@ -129,10 +129,10 @@ plot.forestFloor = function(x,
   for(i in plot_seq) {
     
     if(i %in% cropXaxes && !is.null(cropXaxes)) {
-      limitX = T
+      limitX = TRUE
       Xsd = box.outliers(as.numeric(X[,imp.ind[i]],2),limit=crop_limit,normalize=F)
     } else {
-      limitX = F
+      limitX = FALSE
     }
     
     plot(
@@ -155,19 +155,19 @@ plot.forestFloor = function(x,
 }
 
 #f1a 3d show function
-show3d_new = function(ff,         #"forestFloor" class object
-                      Xi  = 1:2,  # indices of feature columns
-                      FCi = NULL,  # indices of feature contributions columns
-                      col = "#12345678",     #points colour or colour palette, can also be passed as promise in plot.rgl.args
-                      sortByImportance = T,  #should indices count 'variable importance' order or matrix/data.frame order
-                      surface=T,    #should a surface be plotted also
-                      combineFC = sum,  #how should feature contributions be combined
-                      zoom=1.2,       #grid can be expanded in all directions by a factor ,zoom
-                      grid.lines=30,  #how many grid lines should be used
-                      limit=3, #grid does not concider outliers, outside limit of e.g. 3 sd deviations
-                      kknnGrid.args = alist(),  #any possiple argument to kknn package, overwrites this wrapper
-                      plot.rgl.args = alist(),  #same to rgl::plot3d, overrides this wrapper, defines plotting space
-                      surf.rgl.args = alist()   #same to rgl::persp3d, overrides this wraper, added to plot3d
+show3d_new = function(ff,
+                      Xi  = 1:2,
+                      FCi = NULL,
+                      col = "#12345678",    
+                      sortByImportance = TRUE,
+                      surface=TRUE,   
+                      combineFC = sum,  
+                      zoom=1.2,       
+                      grid.lines=30,  
+                      limit=3, 
+                      kknnGrid.args = alist(),  
+                      plot.rgl.args = alist(),  
+                      surf.rgl.args = alist()   
                       ) {
   if(class(ff)!="forestFloor") stop("ff, must be of class forestFloor")
   if(length(Xi)!=2) {
@@ -199,7 +199,7 @@ show3d_new = function(ff,         #"forestFloor" class object
   #merge current/user, wrapper arguments for plot3d in proritized order
   wrapper_arg = list(x=xaxis, y=yaxis, z=zaxis, col=col,
                 xlab=names(X)[1],ylab=names(X)[2],zlab=paste(names(ff$X[,FCi]),collapse=" - "),
-                alpha=.4,size=3,scale=.7,avoidFreeType = T,add=FALSE)
+                alpha=.4,size=3,scale=.7,avoidFreeType = TRUE,add=FALSE)
   calling_arg = append.overwrite.alists(plot.rgl.args,wrapper_arg)
   do.call("plot3d",args=calling_arg)
   
@@ -228,7 +228,7 @@ show3d = function(x,
                   z_scale=.7,
                   knnBag=20,
                   bag.ratio=0.5,
-                  avoidFreeType = T,
+                  avoidFreeType = TRUE,
                   ...) {
   
   #retrieve labels for plotting
@@ -547,7 +547,7 @@ scale.by = function(scale.this,by.this) {
 
 
 #sf6  reduce outliers to within limit of 1.5 std.dev and/or output as normalized 
-box.outliers = function(x,limit=1.5,normalize=T) {
+box.outliers = function(x,limit=1.5,normalize=TRUE) {
   
   sx=scale(x)
   if(limit!=FALSE) {
@@ -597,9 +597,9 @@ kNN.surf = function(knnBag,
                     k,
                     y,
                     bag.ratio=.8,
-                    replace=T) {
+                    replace=TRUE) {
   outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
-    this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
+    this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=TRUE) #pick a bootstrap from samples             
     sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
     out=knn.reg(train=sXY,
@@ -740,7 +740,7 @@ error conditions: if(!calc_np && rfo$type='classification')")
   imp = as.matrix(rfo$importance)[,1]
   out = list(X=X,Y=Y,
              importance = imp,
-             imp_ind = sort(imp,decreasing=T,index.return=T)$ix,
+             imp_ind = sort(imp,decreasing=TRUE,index.return=TRUE)$ix,
              FCmatrix = localIncrements
   )
   class(out) = "forestFloor"
