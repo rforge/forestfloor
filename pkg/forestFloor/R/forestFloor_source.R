@@ -11,14 +11,14 @@ x contains following internal elements: \n ",with(x,ls()))
 
 #m2 plot output
 plot.forestFloor = function(x,
-                            colour_by=1,
-                            col_axis = 1,
-                            plot_seq=NULL,
-                            alpha="auto",
+                            colour_by=1,  #remove
+                            col_axis = 1, #remove
+                            plot_seq=NULL, 
+                            alpha="auto", #remove
                             limitY=TRUE,
-                            order_by_importance=TRUE,
-                            external.col=NULL,
-                            cropXaxes=NULL,
+                            order_by_importance=TRUE, 
+                            external.col=NULL, #remove
+                            cropXaxes=NULL, 
                             crop_limit=4,
                             ...)
   {
@@ -208,7 +208,7 @@ show3d_new = function(ff,
   if(surface) {
     #compute grid
   grid = convolute_grid(ff, Xvars=Xi, FCvars=FCi, limit=limit, grid=grid.lines, zoom=zoom,  userArgs.kknn = kknnGrid.args)
-  wrapper_arg = alist(x=unique(grid[,2]),y=unique(grid[,3]),z=grid[,1],add=TRUE,alpha=0.4) #args defined in this wrapper function
+  wrapper_arg = alist(x=unique(grid[,2]),y=unique(grid[,3]),z=grid[,1],add=TRUE,alpha=0.2,col=c("grey","black")) #args defined in this wrapper function
   calling_arg = append.overwrite.alists(surf.rgl.args,wrapper_arg)   
   do.call("persp3d",args=calling_arg)
   }
@@ -638,7 +638,8 @@ fcol = function(ff,
                 max.df=3,
                 imp.weight = NULL,
                 imp.exp = 1,
-                outlier.lim = 3) {
+                outlier.lim = 3,
+                RGB.exp = NULL) {
   
   ##ssf8.1: is between function
   ib <- function(x, low, high) (x -low) * (high-x) > 0
@@ -672,26 +673,39 @@ fcol = function(ff,
   if(length(cols)<1 || !is.numeric(cols) || any(!cols %in% 1:dim(colM)[2])) {
     stop("no cols selected or is not integer/numeric or wrong coloumns")
   }
-  sel.colM = colM[,cols]    #use only selected columns
+  print("here1")
+  sel.colM = data.frame(colM[,cols])    #use only selected columns
   sel.cols = 1:length(cols) #update cols to match new col.indices of colM
   
+  #auto choose colour system: RGB=TRUE is colours system one
+  if(is.null(RGB)) if(length(cols)==1) RGB=TRUE else RGB=FALSE
+  if(!RGB) {
+    if(is.null(saturation)) saturation = .85
+    if(is.null(brightness)) brightness = .75
+    if(is.null(hue))        hue = .25
+  } else {
+    if(is.null(saturation)) saturation = 1
+    if(is.null(brightness)) brightness = .75
+    if(is.null(hue))        hue = .66    
+    if(is.null(RGB.exp))    RGB.exp=1.2
+    if(is.null(hue.range))  hue.range=2
+  }
+  
+  
+  
+  #force catogorical features to become numeric
+   as.numeric.factor <- function(x) {match(x,levels(x))}
+  for(i in 1:dim(sel.colM)[2]) {
+    if(is.factor(sel.colM[,i])) {
+      this.fac=as.numeric.factor(sel.colM[,i])
+      sel.colM[,i] = this.fac
+    }
+    if(is.character(sel.colM[,i])) sel.colM[,i] = as.numeric(sel.colM[,i])
+  } 
+  print("here2")
   #restrain outliers by limit(std.dev) and normalize
   sel.colM = box.outliers(sel.colM,limit=outlier.lim)
   
-  #auto choose colour system: RGB=TRUE is colours system one
-  if(is.null(RGB)) if(length(cols)==1) {
-    RGB=TRUE
-    if(is.null(saturation)) saturation = 1
-    if(is.null(brightness)) brightness = .75
-    if(is.null(hue))        hue = 0    
-  } else {
-    RGB=FALSE
-  }
-  if(!RGB) {
-    if(is.null(saturation)) saturation = .75
-    if(is.null(brightness)) brightness = .75
-    if(is.null(hue))        hue = .25
-  }
   
   #inflating data by importance
   if(imp.weight && length(cols)>1) {
@@ -705,7 +719,7 @@ fcol = function(ff,
       sel.colM = sel.colM / max(sel.colM)
     } else {warning("importance weighting only possible for class 'forestFloor'")}
   }
-  
+  print("here3")
   #Setting up ranges for colours
   if(any(!c(class(hue),class(saturation),class(brightness)) %in% c("numeric","integer"))){
     stop("hue, saturation and brightness must be of class numeric or integer")
@@ -714,21 +728,20 @@ fcol = function(ff,
   #correct input to be within [0,1]
   hue = hue - floor(hue)
   saturation = max(min(saturation,1),0)
-  brightness = max(min(saturation,1),0)
+  brightness = max(min(brightness,1),0)
   
   ###################
   ###colours system A:  1-way gradient Red-Green-BLUE scale
   
   if(RGB==TRUE) {
-    saturation=1
-    brightness=.8
-    if(is.null(hue.range)) hue.range=1
     if(is.null(bri.range)) bri.range=0.05
     if(is.null(alpha)) alpha=.7
     len.colM = box.outliers(sel.colM,limit=Inf)
-    if(dim(len.colM)[2]==1) nX = as.numeric(len.colM) else nX = as.numeric(apply(len.colM,1,mean))
-    Colours = sapply(nX,function(x) rgb(x^2.3,1-x^2.7-(1-x)^2.7,(1-x)^2.3,alpha=0.6))
-    hsvcol    = t(sapply(nX,function(x) rgb2hsv(x^2.2,1-x^2.7-(1-x)^2.7,(1-x)^2.2)))
+    if(dim(len.colM)[2]==1) nX = as.numeric(len.colM[,1]) else nX = as.numeric(apply(len.colM,1,mean))
+    #Colours = sapply(nX,function(x) rgb(x^2.3,1-x^2.7-(1-x)^2.7,(1-x)^2.3,alpha=0.6))
+    hsvcol    = t(sapply(nX,function(x) rgb2hsv(x^RGB.exp,
+                                                1-x^RGB.exp-(1-x)^RGB.exp,
+                                               (1-x)^RGB.exp)))
     hue.vec = hsvcol[,1] * hue.range + hue
     hue.vec[hue.vec>1] = hue.vec[hue.vec>1] - floor(hue.vec[hue.vec>1])
     hsvcol[,1] = hue.vec
@@ -784,7 +797,7 @@ fcol = function(ff,
   ##writing colour scale dependent on colour degrees of freedom(col.df)
   #one way gradient
   if(col.df==1) {
-    hue.vec = as.numeric(len.colM) * hue.range + hue
+    hue.vec = as.numeric(len.colM[,1]) * hue.range + hue
     hue.vec[hue.vec>1] = hue.vec[hue.vec>1] - floor(hue.vec[hue.vec>1])
     colours = hsv(h = hue.vec,
                   s = saturation,

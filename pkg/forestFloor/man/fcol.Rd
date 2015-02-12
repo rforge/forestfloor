@@ -15,7 +15,7 @@ fcol(ff, cols = NULL, X.matrix = TRUE,
      hue = NULL, saturation = NULL, brightness = NULL,
      hue.range  = NULL, sat.range  = NULL, bri.range  = NULL,
      alpha = NULL, RGB = NULL, max.df=3,
-     imp.weight = NULL, imp.exp = 1,outlier.lim = 3)
+     imp.weight = NULL, imp.exp = 1,outlier.lim = 3,RGB.exp=NULL)
 }
 
 \arguments{
@@ -26,6 +26,10 @@ fcol(ff, cols = NULL, X.matrix = TRUE,
   \item{cols}{
   vector of indices of columns to colour by, will refer to ff$X if X.matrix=T and else ff$FCmatrix. If ff itself is a matrix or data.frame, indices will refer to these coloums
   }
+  \item{X.matrix}{
+  logical, true will use feature matrix false will use feature contribution matrix. Only relvant if input is forestFloor object.
+  }
+  
   \item{hue}{
   value within [0,1], hue=1 will be exactly as hue = 0 
   colour wheel settings, will skew the colour of all observations without changing the contrast between any two given observations.
@@ -67,6 +71,12 @@ exponent to modify influence of imp.weight. 0 is not influence. -1 is counter in
   }
   \item{outlier.limit}{
 number from 0 to Inf. Any observation which univariately exceed this limit will be suppressed, as if it actually where on this limit. Normal limit is 3 standard deviations. Extreme outliers can otherwise reserve alone a very large part of a given linear colour gradient. This leeds to visulization where outlier have one colour and any other observation another but same colour.
+ }
+ 
+ \item{RGB.exp}{
+ value between ]1;>1]. Defines steepness of the gradient of the RGB colour system
+ Close to one green midle area is missing.
+ For values higher than 2, green area is dominating
  }
 }
   
