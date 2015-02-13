@@ -10,7 +10,7 @@ vec.plot visulizes the vector effect charecteristics of a given model. One(2D pl
 }
 \usage{
 vec.plot(model,X,i.var,grid.lines=100,VEC.function=mean,
-                    zoom=1,limitY=F,forestFloor.col=FALSE)
+                    zoom=1,limitY=F,col="#20202050")
 }
 \arguments{
   
@@ -49,8 +49,8 @@ vec.plot(model,X,i.var,grid.lines=100,VEC.function=mean,
   boleen, if TRUE Y-axis is standardised for any variable. Useful for composite plots as shown in example.
   }
   
-  \item{forestFloor.col}{
-  boleen, if TRUE vec.plot inherrits latest forestFloor colours for each observation?
+  \item{col}{
+one colour or vector of colours of points passed to rgl::plot3d
   }
   
 }

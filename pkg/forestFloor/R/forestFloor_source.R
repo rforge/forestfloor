@@ -59,69 +59,6 @@ plot.forestFloor = function(x,
   imp = x$importance     #fetch importance
   imp.ind = x$imp_ind    #fetch importance ranking/indices
   
-# #obsolete  
-#   #set default.colour
-#   colours = "black"
-#   if(!is.null(external.col)) {
-#     colours = external.col
-#   } else {
-#     
-#   #following is multiple colour rules:
-#   
-#   if(colour_by=="PCA") {
-#   #make importance scaled PCA of X
-#     if(col_axis==1) {
-#       pca.X  = prcomp(scale(X)*t(replicate(dim(X)[1],imp)))
-#     } else {
-#       pca.X  = prcomp(scale(FCs)*t(replicate(dim(FCs)[1],imp)))
-#     }
-#       PC123 = pca.X$x[,1:3] #fetch 3 first principal components
-# 
-#   #apply box.outliers to PCA components, to avoid extreme colour leverage of outliers
-#   PC123.box = apply(PC123,2,box.outliers)
-#   #change into colours, with transparancy
-#   colours   = apply(PC123.box,1,function(x) rgb(x[1],x[2],x[3],alpha=alpha))
-#   }
-#   
-#   #colour by top2 variables
-#   if(colour_by=="top2") {
-#     if(col_axis==1) {
-#       sX = apply(X[,imp.ind[1:3]],2,box.outliers)
-#     }else{
-#       sX = apply(FCs[,imp.ind[1:3]],2,box.outliers) 
-#     }
-#     nX = apply(sX,2, function(x) (x-min(x))/(max(x)-min(x)))
-#     nX = apply(nX,2, function(x) (x+.5) / 1.5)
-#     colours = apply(nX,1,function(x) rgb(x[1],x[2],.1,alpha=alpha))
-#   }
-#   
-#   ## colour by specific variable
-#   if(is.numeric(colour_by)) {
-#     if(col_axis==1) {
-#       sX = apply(X[,imp.ind[rep(colour_by,3)]],2,box.outliers)
-#     } else {
-#       sX = apply(FCs[,imp.ind[rep(colour_by,3)]],2,box.outliers)
-#     }
-#     
-#     nX = apply(sX,2, function(x) (x-min(x))/(max(x)-min(x)))
-#     colours = apply(nX,1,function(x) rgb(x[1]^3,1-x[1]^3-(1-x[3])^3,(1-x[3])^3,alpha=alpha))
-#     #rainbow colouring
-#     #nx = X[,imp.ind[colour_by]]
-#     #colours = rainbow(length(nx),start=0.2,alpha=alpha)[match(1:length(nx),sort(nx,index.return=T)$ix)]
-#   }
-#  
-#   }
-#  
-#   #Save this colouring globally, for later 3D plotting
-#   if(exists("forestFloor_graphics.env",envir=.GlobalEnv)) {
-#     assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
-#   } else {
-#     local({forestFloor_graphics.env <- new.env()},envir=.GlobalEnv)
-#     assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
-#     #goto global env, make graphics.env, place colours here
-#   }
-#   
-  
   ##plot the n.plots most important variables
   Xsd = 0:1 #initialize Xsd
   if(!order_by_importance) imp.ind=sort(imp.ind) #optinal removal of importance order
@@ -140,7 +77,6 @@ plot.forestFloor = function(x,
         partial.contribution  = FCs[,imp.ind[i]]
       ),
       main = names(imp)[imp.ind[i]],
-      #obsolete#col = colours,  #colours are fetched from forestFloor_graphics.env
       ylim = list(NULL,range(FCs))[[limitY+1]], #same Yaxis if limitY == TRUE
       xlim = list(NULL,range(Xsd))[[limitX+1]],
       ...
@@ -213,153 +149,8 @@ show3d_new = function(ff,
   }
 }
 
-# #f1b 3d show function
-# show3d = function(x,
-#                   order_by_importance=FALSE,
-#                   which_matrices=c("X","X","FCmatrix"),
-#                   x_cols=1,y_cols=2,z_cols=c(1:2),
-#                   plot.surface=TRUE,
-#                   grid.lines=30,
-#                   k=5,
-#                   alpha.surf=.4,
-#                   alpha.obs=.4,
-#                   size.obs=3,
-#                   z_scale=.7,
-#                   knnBag=20,
-#                   bag.ratio=0.5,
-#                   avoidFreeType = TRUE,
-#                   ...) {
-#   
-#   #retrieve labels for plotting
-#   xyzlab = with(x,{
-#     lab=c()
-#     if(!order_by_importance) imp_ind = sort(imp_ind)
-#     lab$x =       names(get(which_matrices[1]))[imp_ind[x_cols]]
-#     lab$y =       names(get(which_matrices[2]))[imp_ind[y_cols]]
-#     lab$z =       names(get(which_matrices[3]))[imp_ind[z_cols]]
-#     return(lab)
-#   })
-#   
-#   
-#   #apply funciton later requires two inputs pr axis, if one that is duplicated into two
-#   cols.fix = function(i) if(length(i)<2){i=c(i,i)}else{i}
-#   x_cols = cols.fix(x_cols)
-#   y_cols = cols.fix(y_cols)
-#   z_cols = cols.fix(z_cols)
-#   
-#   
-#   axisval = with(x,{
-#     axisval=c()
-#     if(order_by_importance) {
-#       imp.ind = imp_ind
-#       ind_by_imp = function(cols,imp.ind) imp.ind[cols]
-#       x_cols = ind_by_imp(x_cols,imp.ind)
-#       y_cols = ind_by_imp(y_cols,imp.ind)
-#       z_cols = ind_by_imp(z_cols,imp.ind)
-#     }
-#     
-#     if(!which_matrices[1]=="FCmatrix") {
-#       axisval$x =          get(which_matrices[1])[,x_cols[1]]
-#     }else{
-#       axisval$x =    apply(get(which_matrices[1])[,x_cols],1,mean)
-#     }
-#     if(!which_matrices[2]=="FCmatrix") {
-#       axisval$y       =    get(which_matrices[2])[,y_cols[1]]
-#     }else{
-#       axisval$y =    apply(get(which_matrices[2])[,y_cols],1,mean)
-#     }
-#     if(!which_matrices[3]=="FCmatrix") {
-#       axisval$z          = get(which_matrices[3])[,z_cols[1]]  
-#     }else{
-#       axisval$z    = apply(get(which_matrices[3])[,z_cols],1,mean)
-#     }
-#     return(axisval)
-#   })
-#   
-#   as.numeric.factor <- function(x) {match(x,levels(x))}
-#   if(is.factor(axisval$x)) axisval$x = as.numeric.factor(axisval$x)
-#   if(is.factor(axisval$y)) axisval$y = as.numeric.factor(axisval$y)
-#   if(is.factor(axisval$z)) axisval$z = as.numeric.factor(axisval$z)
-#   
-#   # Open 3d picture,
-#   open3d(...)
-#   
-#   # Get colours
-#   if(exists("obs.indv.colours",envir=forestFloor_graphics.env)) {
-#     colpal = get("obs.indv.colours",envir=forestFloor_graphics.env)
-#   } else {
-#     colpal = "black"
-#   }
-#   
-#   
-#   #should surfe of data also be plotted
-#   if(plot.surface) { 
-#     #compute grid around data
-#     get.seq = function(x) seq(min(x),max(x),length.out=grid.lines)
-#     XY = as.matrix(cbind(axisval$x,axisval$y),dimnames=NULL)
-#     ite.val=apply(XY,2,get.seq)
-#     gridXY=as.matrix(expand.grid(ite.val[,1],ite.val[,2]),dimnames=NULL) #grid coordinates
-#     g.points = grid.lines^2
-#     #     
-#     #     #rescale variables to equal to achieve equal influence in kNN-model
-#     #     sXY = scale(XY) #scale XY
-#     #     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #scale grid exactly as XY
-#     
-#     ##bootstrap knn estimated surface, giving gaussian-isch distance weigths
-#     out = kNN.surf(knnBag=knnBag,
-#                    XY=XY,
-#                    gridXY=gridXY,
-#                    k=k,
-#                    y=axisval$z,
-#                    bag.ratio = bag.ratio
-#     )
-#     
-#     #test the self-explainance of surface
-#     out2 = kNN.surf(knnBag=knnBag,
-#                     XY=XY,
-#                     gridXY=XY,
-#                     k=k,
-#                     y=axisval$z,
-#                     bag.ratio = bag.ratio
-#     )
-#     
-#     SSerrorSurf = sum((axisval$z-out2)^2)
-#     SSmodelSurf = sum((out2)^2)
-#     R2 = SSmodelSurf / (SSmodelSurf + SSerrorSurf)
-#     cat("fit of this surface plot is",round(R2,3),"% \n")
-#     
-#     # #debugging break
-#     # return(mget(ls()))
-#     
-#     xlab = names(x$X)
-#     
-#     
-#     #plot.surface
-#     persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
-#             xlab = xyzlab$x,    ylab = xyzlab$y,    zlab = "feature contribution",
-#             aspect=c(1, 1, z_scale),main=paste("surf-fit=",round(R2,3),"%"),
-#             alpha=alpha.surf,col="#f2f2f2ff",
-#             ...)
-#     points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
-#     
-#   }else{  # plot.surface = FASLSE, then data points only
-#     plot3d(axisval$x,axisval$y,axisval$z,
-#            col=colpal,
-#            aspect=c(1, 1, z_scale),
-#            size=size.obs,
-#            alpha=alpha.obs,
-#            xlab = xyzlab$x,
-#            ylab = xyzlab$y,
-#            zlab = "feature contribution",
-#            ...)
-#   }            
-# }
-# 
-
-
-
 #f2 - show vec plot 2D and 3D
-vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY=F,forestFloor.col=FALSE) {
+vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY=F,col="#20202050") {
   
   #compute grid range
   d = length(i.var)
@@ -383,9 +174,6 @@ vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY
   Xtest.obs = data.frame(t(replicate(dim(X)[1],Xgeneralized)))
   Xtest.obs[,i.var] = values.to.plot
   yhat.obs =  predict(model, Xtest.obs)
-  
-  #defining one colour for all observations or import external colours
-  if(forestFloor.col) {col = with(forestFloor_graphics.env,obs.indv.colours)} else {col="#20202050"}
   
   #plot VEC-space versus predictions (only 2D and 3D plot supported)
   if(d==2) { #if 2D VEC space
@@ -418,7 +206,9 @@ convolute_ff = function(ff,
   k=k.fun()
   if(is.null(these.vars)) these.vars = 1:n.vars
   
+  
   #merge user and wrapper args
+  Data = "I only exist to satisfy R cmd CHECK" #dummy declaration
   defaultArgs.kknn = alist(formula=fc~.,data=Data,kmax=k,kernel="gaussian")
   kknn.args=append.overwrite.alists(userArgs.kknn,defaultArgs.kknn)
   
