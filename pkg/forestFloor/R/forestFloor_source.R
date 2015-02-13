@@ -213,192 +213,192 @@ show3d_new = function(ff,
   }
 }
 
-#f1b 3d show function
-show3d = function(x,
-                  order_by_importance=FALSE,
-                  which_matrices=c("X","X","FCmatrix"),
-                  x_cols=1,y_cols=2,z_cols=c(1:2),
-                  plot.surface=TRUE,
-                  grid.lines=30,
-                  k=5,
-                  alpha.surf=.4,
-                  alpha.obs=.4,
-                  size.obs=3,
-                  z_scale=.7,
-                  knnBag=20,
-                  bag.ratio=0.5,
-                  avoidFreeType = TRUE,
-                  ...) {
-  
-  #retrieve labels for plotting
-  xyzlab = with(x,{
-    lab=c()
-    if(!order_by_importance) imp_ind = sort(imp_ind)
-    lab$x =       names(get(which_matrices[1]))[imp_ind[x_cols]]
-    lab$y =       names(get(which_matrices[2]))[imp_ind[y_cols]]
-    lab$z =       names(get(which_matrices[3]))[imp_ind[z_cols]]
-    return(lab)
-  })
-  
-  
-  #apply funciton later requires two inputs pr axis, if one that is duplicated into two
-  cols.fix = function(i) if(length(i)<2){i=c(i,i)}else{i}
-  x_cols = cols.fix(x_cols)
-  y_cols = cols.fix(y_cols)
-  z_cols = cols.fix(z_cols)
-  
-  
-  axisval = with(x,{
-    axisval=c()
-    if(order_by_importance) {
-      imp.ind = imp_ind
-      ind_by_imp = function(cols,imp.ind) imp.ind[cols]
-      x_cols = ind_by_imp(x_cols,imp.ind)
-      y_cols = ind_by_imp(y_cols,imp.ind)
-      z_cols = ind_by_imp(z_cols,imp.ind)
-    }
-    
-    if(!which_matrices[1]=="FCmatrix") {
-      axisval$x =          get(which_matrices[1])[,x_cols[1]]
-    }else{
-      axisval$x =    apply(get(which_matrices[1])[,x_cols],1,mean)
-    }
-    if(!which_matrices[2]=="FCmatrix") {
-      axisval$y       =    get(which_matrices[2])[,y_cols[1]]
-    }else{
-      axisval$y =    apply(get(which_matrices[2])[,y_cols],1,mean)
-    }
-    if(!which_matrices[3]=="FCmatrix") {
-      axisval$z          = get(which_matrices[3])[,z_cols[1]]  
-    }else{
-      axisval$z    = apply(get(which_matrices[3])[,z_cols],1,mean)
-    }
-    return(axisval)
-  })
-  
-  as.numeric.factor <- function(x) {match(x,levels(x))}
-  if(is.factor(axisval$x)) axisval$x = as.numeric.factor(axisval$x)
-  if(is.factor(axisval$y)) axisval$y = as.numeric.factor(axisval$y)
-  if(is.factor(axisval$z)) axisval$z = as.numeric.factor(axisval$z)
-  
-  # Open 3d picture,
-  open3d(...)
-  
-  # Get colours
-  if(exists("obs.indv.colours",envir=forestFloor_graphics.env)) {
-    colpal = get("obs.indv.colours",envir=forestFloor_graphics.env)
-  } else {
-    colpal = "black"
-  }
-  
-  
-  #should surfe of data also be plotted
-  if(plot.surface) { 
-    #compute grid around data
-    get.seq = function(x) seq(min(x),max(x),length.out=grid.lines)
-    XY = as.matrix(cbind(axisval$x,axisval$y),dimnames=NULL)
-    ite.val=apply(XY,2,get.seq)
-    gridXY=as.matrix(expand.grid(ite.val[,1],ite.val[,2]),dimnames=NULL) #grid coordinates
-    g.points = grid.lines^2
-    #     
-    #     #rescale variables to equal to achieve equal influence in kNN-model
-    #     sXY = scale(XY) #scale XY
-    #     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #scale grid exactly as XY
-    
-    ##bootstrap knn estimated surface, giving gaussian-isch distance weigths
-    out = kNN.surf(knnBag=knnBag,
-                   XY=XY,
-                   gridXY=gridXY,
-                   k=k,
-                   y=axisval$z,
-                   bag.ratio = bag.ratio
-    )
-    
-    #test the self-explainance of surface
-    out2 = kNN.surf(knnBag=knnBag,
-                    XY=XY,
-                    gridXY=XY,
-                    k=k,
-                    y=axisval$z,
-                    bag.ratio = bag.ratio
-    )
-    
-    SSerrorSurf = sum((axisval$z-out2)^2)
-    SSmodelSurf = sum((out2)^2)
-    R2 = SSmodelSurf / (SSmodelSurf + SSerrorSurf)
-    cat("fit of this surface plot is",round(R2,3),"% \n")
-    
-    # #debugging break
-    # return(mget(ls()))
-    
-    xlab = names(x$X)
-    
-    
-    #plot.surface
-    persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
-            xlab = xyzlab$x,    ylab = xyzlab$y,    zlab = "feature contribution",
-            aspect=c(1, 1, z_scale),main=paste("surf-fit=",round(R2,3),"%"),
-            alpha=alpha.surf,col="#f2f2f2ff",
-            ...)
-    points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
-    
-  }else{  # plot.surface = FASLSE, then data points only
-    plot3d(axisval$x,axisval$y,axisval$z,
-           col=colpal,
-           aspect=c(1, 1, z_scale),
-           size=size.obs,
-           alpha=alpha.obs,
-           xlab = xyzlab$x,
-           ylab = xyzlab$y,
-           zlab = "feature contribution",
-           ...)
-  }            
-}
-
+# #f1b 3d show function
+# show3d = function(x,
+#                   order_by_importance=FALSE,
+#                   which_matrices=c("X","X","FCmatrix"),
+#                   x_cols=1,y_cols=2,z_cols=c(1:2),
+#                   plot.surface=TRUE,
+#                   grid.lines=30,
+#                   k=5,
+#                   alpha.surf=.4,
+#                   alpha.obs=.4,
+#                   size.obs=3,
+#                   z_scale=.7,
+#                   knnBag=20,
+#                   bag.ratio=0.5,
+#                   avoidFreeType = TRUE,
+#                   ...) {
+#   
+#   #retrieve labels for plotting
+#   xyzlab = with(x,{
+#     lab=c()
+#     if(!order_by_importance) imp_ind = sort(imp_ind)
+#     lab$x =       names(get(which_matrices[1]))[imp_ind[x_cols]]
+#     lab$y =       names(get(which_matrices[2]))[imp_ind[y_cols]]
+#     lab$z =       names(get(which_matrices[3]))[imp_ind[z_cols]]
+#     return(lab)
+#   })
+#   
+#   
+#   #apply funciton later requires two inputs pr axis, if one that is duplicated into two
+#   cols.fix = function(i) if(length(i)<2){i=c(i,i)}else{i}
+#   x_cols = cols.fix(x_cols)
+#   y_cols = cols.fix(y_cols)
+#   z_cols = cols.fix(z_cols)
+#   
+#   
+#   axisval = with(x,{
+#     axisval=c()
+#     if(order_by_importance) {
+#       imp.ind = imp_ind
+#       ind_by_imp = function(cols,imp.ind) imp.ind[cols]
+#       x_cols = ind_by_imp(x_cols,imp.ind)
+#       y_cols = ind_by_imp(y_cols,imp.ind)
+#       z_cols = ind_by_imp(z_cols,imp.ind)
+#     }
+#     
+#     if(!which_matrices[1]=="FCmatrix") {
+#       axisval$x =          get(which_matrices[1])[,x_cols[1]]
+#     }else{
+#       axisval$x =    apply(get(which_matrices[1])[,x_cols],1,mean)
+#     }
+#     if(!which_matrices[2]=="FCmatrix") {
+#       axisval$y       =    get(which_matrices[2])[,y_cols[1]]
+#     }else{
+#       axisval$y =    apply(get(which_matrices[2])[,y_cols],1,mean)
+#     }
+#     if(!which_matrices[3]=="FCmatrix") {
+#       axisval$z          = get(which_matrices[3])[,z_cols[1]]  
+#     }else{
+#       axisval$z    = apply(get(which_matrices[3])[,z_cols],1,mean)
+#     }
+#     return(axisval)
+#   })
+#   
+#   as.numeric.factor <- function(x) {match(x,levels(x))}
+#   if(is.factor(axisval$x)) axisval$x = as.numeric.factor(axisval$x)
+#   if(is.factor(axisval$y)) axisval$y = as.numeric.factor(axisval$y)
+#   if(is.factor(axisval$z)) axisval$z = as.numeric.factor(axisval$z)
+#   
+#   # Open 3d picture,
+#   open3d(...)
+#   
+#   # Get colours
+#   if(exists("obs.indv.colours",envir=forestFloor_graphics.env)) {
+#     colpal = get("obs.indv.colours",envir=forestFloor_graphics.env)
+#   } else {
+#     colpal = "black"
+#   }
+#   
+#   
+#   #should surfe of data also be plotted
+#   if(plot.surface) { 
+#     #compute grid around data
+#     get.seq = function(x) seq(min(x),max(x),length.out=grid.lines)
+#     XY = as.matrix(cbind(axisval$x,axisval$y),dimnames=NULL)
+#     ite.val=apply(XY,2,get.seq)
+#     gridXY=as.matrix(expand.grid(ite.val[,1],ite.val[,2]),dimnames=NULL) #grid coordinates
+#     g.points = grid.lines^2
+#     #     
+#     #     #rescale variables to equal to achieve equal influence in kNN-model
+#     #     sXY = scale(XY) #scale XY
+#     #     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #scale grid exactly as XY
+#     
+#     ##bootstrap knn estimated surface, giving gaussian-isch distance weigths
+#     out = kNN.surf(knnBag=knnBag,
+#                    XY=XY,
+#                    gridXY=gridXY,
+#                    k=k,
+#                    y=axisval$z,
+#                    bag.ratio = bag.ratio
+#     )
+#     
+#     #test the self-explainance of surface
+#     out2 = kNN.surf(knnBag=knnBag,
+#                     XY=XY,
+#                     gridXY=XY,
+#                     k=k,
+#                     y=axisval$z,
+#                     bag.ratio = bag.ratio
+#     )
+#     
+#     SSerrorSurf = sum((axisval$z-out2)^2)
+#     SSmodelSurf = sum((out2)^2)
+#     R2 = SSmodelSurf / (SSmodelSurf + SSerrorSurf)
+#     cat("fit of this surface plot is",round(R2,3),"% \n")
+#     
+#     # #debugging break
+#     # return(mget(ls()))
+#     
+#     xlab = names(x$X)
+#     
+#     
+#     #plot.surface
+#     persp3d(x=ite.val[,1], y=ite.val[,2], z=out,
+#             xlab = xyzlab$x,    ylab = xyzlab$y,    zlab = "feature contribution",
+#             aspect=c(1, 1, z_scale),main=paste("surf-fit=",round(R2,3),"%"),
+#             alpha=alpha.surf,col="#f2f2f2ff",
+#             ...)
+#     points3d(axisval$x,axisval$y,axisval$z,col=colpal,size=size.obs,alpha=alpha.obs,...)    
+#     
+#   }else{  # plot.surface = FASLSE, then data points only
+#     plot3d(axisval$x,axisval$y,axisval$z,
+#            col=colpal,
+#            aspect=c(1, 1, z_scale),
+#            size=size.obs,
+#            alpha=alpha.obs,
+#            xlab = xyzlab$x,
+#            ylab = xyzlab$y,
+#            zlab = "feature contribution",
+#            ...)
+#   }            
+# }
+# 
 
 
 
 #f2 - show vec plot 2D and 3D
 vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY=F,forestFloor.col=FALSE) {
-
-#compute grid range
-d = length(i.var)
-scales = lapply(i.var, function(i) {
-  rXi = range(X[,i])
-  span = abs(rXi[2]-rXi[1])*zoom/2
-  center = mean(rXi)
-  seq(center-span,center+span,length.out=grid.lines)
-})
-
-#expand grid range to a n-dimensional VEC-space and predict by model
-anchor.points = as.matrix(expand.grid(scales),dimnames=NULL)
-Xgeneralized=apply(X,2,VEC.function)    
-Xtest.vec = data.frame(t(replicate(dim(anchor.points)[1],Xgeneralized)))
-Xtest.vec[,i.var] = anchor.points
-yhat.vec = predict(model,Xtest.vec)
-
-#add observations to VEC-space
-values.to.plot=X[,i.var]
-Xmean=apply(X,2,VEC.function)
-Xtest.obs = data.frame(t(replicate(dim(X)[1],Xgeneralized)))
-Xtest.obs[,i.var] = values.to.plot
-yhat.obs =  predict(model, Xtest.obs)
-
-#defining one colour for all observations or import external colours
-if(forestFloor.col) {col = with(forestFloor_graphics.env,obs.indv.colours)} else {col="#20202050"}
-
-#plot VEC-space versus predictions (only 2D and 3D plot supported)
-if(d==2) { #if 2D VEC space
-  plot3d(x=values.to.plot[,1],y=values.to.plot[,2],z=yhat.obs,
-         xlab=names(X)[i.var][1],ylab=names(X)[i.var][2],main="VEC-SURFACE",col=col)
-  surface3d(x=scales[[1]],
-            y=scales[[2]],
-            z=yhat.vec,col="#404080",size=4,alpha=0.4)
-}else{ #otherwise if 1D VEC-space
-  if(limitY) {ylim = range(model$y)} else {ylim = NULL}
-  plot(x=scales[[1]],y=yhat.vec,col="red",type="l",xlab=names(X)[i.var][1],ylim=ylim)
-  points(values.to.plot,yhat.obs)
-}
+  
+  #compute grid range
+  d = length(i.var)
+  scales = lapply(i.var, function(i) {
+    rXi = range(X[,i])
+    span = abs(rXi[2]-rXi[1])*zoom/2
+    center = mean(rXi)
+    seq(center-span,center+span,length.out=grid.lines)
+  })
+  
+  #expand grid range to a n-dimensional VEC-space and predict by model
+  anchor.points = as.matrix(expand.grid(scales),dimnames=NULL)
+  Xgeneralized=apply(X,2,VEC.function)    
+  Xtest.vec = data.frame(t(replicate(dim(anchor.points)[1],Xgeneralized)))
+  Xtest.vec[,i.var] = anchor.points
+  yhat.vec = predict(model,Xtest.vec)
+  
+  #add observations to VEC-space
+  values.to.plot=X[,i.var]
+  Xmean=apply(X,2,VEC.function)
+  Xtest.obs = data.frame(t(replicate(dim(X)[1],Xgeneralized)))
+  Xtest.obs[,i.var] = values.to.plot
+  yhat.obs =  predict(model, Xtest.obs)
+  
+  #defining one colour for all observations or import external colours
+  if(forestFloor.col) {col = with(forestFloor_graphics.env,obs.indv.colours)} else {col="#20202050"}
+  
+  #plot VEC-space versus predictions (only 2D and 3D plot supported)
+  if(d==2) { #if 2D VEC space
+    plot3d(x=values.to.plot[,1],y=values.to.plot[,2],z=yhat.obs,
+           xlab=names(X)[i.var][1],ylab=names(X)[i.var][2],main="VEC-SURFACE",col=col)
+    surface3d(x=scales[[1]],
+              y=scales[[2]],
+              z=yhat.vec,col="#404080",size=4,alpha=0.4)
+  }else{ #otherwise if 1D VEC-space
+    if(limitY) {ylim = range(model$y)} else {ylim = NULL}
+    plot(x=scales[[1]],y=yhat.vec,col="red",type="l",xlab=names(X)[i.var][1],ylim=ylim)
+    points(values.to.plot,yhat.obs)
+  }
 }
 
 
@@ -534,13 +534,13 @@ convolute_grid = function(ff,
 
 
 
-#sf5 scale data and grid, to allow knn 
-scale.by = function(scale.this,by.this) {
-  center = attributes(by.this)$'scaled:center'
-  scales = attributes(by.this)$'scaled:scale'
-  nvars = dim(scale.this)[2]
-  sapply(1:nvars, function(i) (scale.this[,i]-center[i])/scales[i])
-}
+# #sf5 scale data and grid, to allow knn 
+# scale.by = function(scale.this,by.this) {
+#   center = attributes(by.this)$'scaled:center'
+#   scales = attributes(by.this)$'scaled:scale'
+#   nvars = dim(scale.this)[2]
+#   sapply(1:nvars, function(i) (scale.this[,i]-center[i])/scales[i])
+# }
 
 
 
@@ -589,27 +589,27 @@ box.outliers = function(x,limit=1.5,normalize=TRUE) {
 #   })
 # }
 
-#sf7 estimate surface with kNNbag, depends on "sf5 - scale.by"
-kNN.surf = function(knnBag,
-                    XY,
-                    gridXY,
-                    k,
-                    y,
-                    bag.ratio=.8,
-                    replace=TRUE) {
-  outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
-    this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=TRUE) #pick a bootstrap from samples             
-    sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
-    sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
-    out=knn.reg(train=sXY,
-                test=sgridXY,
-                y=y[this.boot.ind],
-                k=k,
-                algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
-  })
-  out = apply(outs,1,mean) # collect predictions
-  return(out)
-}
+# #sf7 estimate surface with kNNbag, depends on "sf5 - scale.by"
+# kNN.surf = function(knnBag,
+#                     XY,
+#                     gridXY,
+#                     k,
+#                     y,
+#                     bag.ratio=.8,
+#                     replace=TRUE) {
+#   outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
+#     this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=TRUE) #pick a bootstrap from samples             
+#     sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
+#     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
+#     out=knn.reg(train=sXY,
+#                 test=sgridXY,
+#                 y=y[this.boot.ind],
+#                 k=k,
+#                 algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
+#   })
+#   out = apply(outs,1,mean) # collect predictions
+#   return(out)
+# }
 
 
 
