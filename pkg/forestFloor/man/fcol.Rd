@@ -69,7 +69,7 @@ value within [0,1], for colouring of 3 or more variables, a range of brightness 
   \item{imp.exp}{
 exponent to modify influence of imp.weight. 0 is not influence. -1 is counter influence. 1 is linear influence. .5 is square root influence etc..
   }
-  \item{outlier.limit}{
+  \item{outlier.lim}{
 number from 0 to Inf. Any observation which univariately exceed this limit will be suppressed, as if it actually where on this limit. Normal limit is 3 standard deviations. Extreme outliers can otherwise reserve alone a very large part of a given linear colour gradient. This leeds to visulization where outlier have one colour and any other observation another but same colour.
  }
  

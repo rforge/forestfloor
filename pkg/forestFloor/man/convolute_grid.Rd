@@ -86,11 +86,11 @@ Y= Y+Yerror
 
 #grow a forest, remember to include inbag
 rfo=randomForest::randomForest(X,Y,
-                              keep.inbag=TRUE,
-                              ntree=1000,
-                              replace=TRUE,
-                              sampsize=1500,
-                              importance=TRUE)
+                               keep.inbag=TRUE,
+                               ntree=1000,
+                               replace=TRUE,
+                               sampsize=1500,
+                               importance=TRUE)
 
 #compute topology
 ff = forestFloor(rfo,X)
@@ -99,18 +99,16 @@ ff = forestFloor(rfo,X)
 print(ff) 
 
 #plot partial functions of most important variables first
-plot(ff,plot_seq=NULL,colour_by=1,col_axis=1,order_by_importance=TRUE) 
+Col=fcol(ff,2)
+plot(ff,col=Col,order_by_importance=TRUE) 
 
 #the pure feature contributions
 plot3d(ff$X[,2],ff$X[,3],apply(ff$FCmatrix[,2:3],1,sum),
        #add some colour gradients to ease visualization
-        #box.outliers squese all observations in a 2 std.dev box
-        #univariately for a vector or matrix and normalize to [0;1]
-       col=rgb(box.outliers(ff$X[,2])^3,
-               1-abs(box.outliers(ff$X[,2])-0.5)^(1/3),        
-               1- box.outliers(ff$X[,2])^(1/3)
-       )
-)
+       #box.outliers squese all observations in a 2 std.dev box
+       #univariately for a vector or matrix and normalize to [0;1]
+       col=fcol(ff,2))
+
 
 
 #add grid convolution/interpolation
@@ -132,9 +130,9 @@ grid123 = convolute_grid(ff,
                          Xvars=c(1:3),
                          FCvars=c(1:3),
                          userArgs.kknn = alist(
-                                          k= 100,
-                                          kernel = "gaussian",
-                                          distance = 1),
+                           k= 100,
+                           kernel = "gaussian",
+                           distance = 1),
                          grid=25,
                          zoom=1.2)
 
@@ -170,10 +168,11 @@ for(i in uni3) {
   this34.plane = grid123[grid123[,4]==i,]
   if (count==2) add=TRUE
   
-  #  plot3d(ff$X[,1],ff$X[,2]
+  #plot3d(ff$X[,1],ff$X[,2])
   persp3d(unique(this34.plane[,2]),
           unique(this34.plane[,3]),
-          this34.plane[,1], add=add, col=rgb(count/length(uni3),1-count/length(uni3),0),alpha=0.1)
+          this34.plane[,1], add=add,
+          col=rgb(count/length(uni3),1-count/length(uni3),0),alpha=0.1)
 }
 
  

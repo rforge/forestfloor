@@ -7,17 +7,17 @@ Metod: plot.forestFloor
 Method to plot an object of forestFloor-class. Plot partial feature contributions of the most important variables. Colour gradients can be applied two show possible interactions.
 }
 \usage{
-\method{plot}{forestFloor}(x,
-                           colour_by = 1,
-                           col_axis = 1,
-                           plot_seq = NULL,
-                           alpha = "auto",
-                           limitY = TRUE,
-                           order_by_importance = TRUE,
-                           external.col = NULL,
-                           cropXaxes = NULL,
-                           crop_limit = 4,
-                           ...) 
+\method{plot}{forestFloor} (x,
+                            #colour_by=1,  #remove
+                            #col_axis = 1, #remove
+                            plot_seq=NULL, 
+                            #alpha="auto", #remove
+                            limitY=TRUE,
+                            order_by_importance=TRUE, 
+                            #external.col=NULL, #remove
+                            cropXaxes=NULL, 
+                            crop_limit=4,
+                            ...)
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -28,34 +28,9 @@ Computed topology of randomForest-model, the output from the forestFloor functio
 includes also X and Y and importance data
 }
 
-  \item{colour_by}{
-different colour method can be applied: \cr
-input is a integer or "PCA" or "top2" \cr
-a number will point to one specific variable, a gradient from red to green to blue is applied. colour_by = 2 will refer to the second of multiple plots. Which plot is the second is influenced by 'plot_seq' and 'order_by_importance' see below. 
-"PCA" will apply importance weighted PCA, to reduce the system to 3 linear principal components which is converted into RGB.color. Similarly coloured points are likely to be linearly close.
-"top2" applies a two.way colouring gradient by the most and second most important variable
-}
-
-\item{col_axis}{
-a number \cr
-=1 gradient is computed from feature space or X-axis \cr
-=2 gradient is compputed from feature contribution space y-axis \cr
-
-... if colour_by = 2 & col_axis = 2 a vertical gradient will be applied to second plot (and to others correspondingly). \cr
-... if colour_by = "PCA" & col_axis = 1, three feature space PCA components will colour the observations \cr
-... if colour_by = "PCA" & col_axis = 2, three feature contributions PCA components will colour the observations \cr
-}
-
 \item{plot_seq}{
 a numeric vector describing which variables and in what sequence to plot,
 ordered by importance as default, order_by_importance = F then by feature/coloumn order of training data.
-}
-
-\item{alpha}{
-a number within [0;1] or the method "auto" 
-transparency of points,
-"auto" the more points the more transparrent to avoid overplotting
-otherwise manually set as a number [0;1] where 0 is completely transparrent
 }
 
 \item{limitY}{
@@ -65,13 +40,6 @@ TRUE/FLASE, constrain all Yaxis to same limits to ensure relevance of low import
 \item{order_by_importance}{
 TRUE / FALSE
 should plotting and plot_seq be ordered after importance. Most important feature plot first(TRUE)
-}
-
-\item{external.col}{
-a colour vector being sent to col input of genric plot function plot.
-This port allows a user to define new colour gradients. e.g.
-ext.col.vec = rgb(red=box.outliers(Y),green=0.2,blue=0.2,alpha=0.4) \cr
-Where Y is the numeric training target, box.outliers() remove extreme observations and normalize, rgb(). ext.col.vec should in any case have same length as Y.
 }
 
 \item{cropXaxes}{
@@ -127,19 +95,25 @@ ff = forestFloor(rfo,X)
 print(ff) 
 
 #plot partial functions of most important variables first
-plot(ff,plot_seq=NULL,colour_by="dummy, no defined color-template",col_axis=1) 
+plot(ff,order_by_importance=TRUE) 
 
 #Non interacting functions are well displayed, whereas X3 and X4 are not
 #by applying different colourgradient, interactions reveal themself 
-plot(ff,plot_seq=NULL,colour_by=3,col_axis=1) 
+Col=fcol(ff,3)
+plot(ff,col=Col) 
 
 #in 3D the interaction between X3 and X reveals itself completely
-show3d(ff,x_cols=3,y_cols=4,z_cols=3:4) 
+show3d_new(ff,3:4,col=Col) 
 
 #although no interaction, a joined additive effect of X1 and X2
 #can also be informative to display in 3D
-plot(ff,plot_seq=NULL,colour_by=4,col_axis=2) #use plot first to define colours 
-show3d(ff,x_cols=1,y_cols=2,z_cols=1:2) 
+Col = fcol(ff,2,X.matrix=FALSE)
+plot(ff,col=Col) #use plot first to define colours 
+show3d_new(ff,1:2,
+           col=Col,
+           plot.rgl=list(size=4),
+           surf.rgl=list(col=c("red","green")))
+ 
 }
 
 \keyword{ multivariate }

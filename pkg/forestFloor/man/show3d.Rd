@@ -102,6 +102,9 @@ Soren Havelund Welling
 }
 
 \examples{
+
+\dontrun{
+#this function is obsolete from version 1.3, and no more supported
 #simulate data
 obs=1000 
 vars = 6 
@@ -131,6 +134,7 @@ show3d(ff,x_cols=3,y_cols=4,z_cols=3:4)
 #can also be informative to display in 3D
 plot(ff,plot_seq=NULL,colour_by=4,col_axis=2) #use plot first to define colours 
 show3d(ff,x_cols=1,y_cols=2,z_cols=1:2) 
+}
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

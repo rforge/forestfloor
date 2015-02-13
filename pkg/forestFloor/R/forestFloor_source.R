@@ -11,13 +11,13 @@ x contains following internal elements: \n ",with(x,ls()))
 
 #m2 plot output
 plot.forestFloor = function(x,
-                            colour_by=1,  #remove
-                            col_axis = 1, #remove
+                            #colour_by=1,  #remove
+                            #col_axis = 1, #remove
                             plot_seq=NULL, 
-                            alpha="auto", #remove
+                            #alpha="auto", #remove
                             limitY=TRUE,
                             order_by_importance=TRUE, 
-                            external.col=NULL, #remove
+                            #external.col=NULL, #remove
                             cropXaxes=NULL, 
                             crop_limit=4,
                             ...)
@@ -30,10 +30,11 @@ plot.forestFloor = function(x,
   X = x$X
   FCs = x$FCmatrix
   
-  #Auto setting transparancy variable. The more obs, the more transparrency
-  if(alpha=="auto") alpha = min(max(400/dim(X)[1],0.2),1)
-  
-  #If now sequnce, choosing to plot first 18 variables
+#obsolete
+#   #Auto setting transparancy variable. The more obs, the more transparrency
+#   if(alpha=="auto") alpha = min(max(400/dim(X)[1],0.2),1)
+#   
+  #If no sequnce, choosing to plot first 18 variables
   if(is.null(plot_seq)) plot_seq = 1:min(dim(X)[2],24)
   
   #make catogorical features numeric, save jitter.template
@@ -58,70 +59,68 @@ plot.forestFloor = function(x,
   imp = x$importance     #fetch importance
   imp.ind = x$imp_ind    #fetch importance ranking/indices
   
-  
-  #set default.colour
-  colours = "black"
-  if(!is.null(external.col)) {
-    colours = external.col
-  } else {
-    
-  #following is multiple colour rules:
-  
-  if(colour_by=="PCA") {
-  #make importance scaled PCA of X
-    if(col_axis==1) {
-      pca.X  = prcomp(scale(X)*t(replicate(dim(X)[1],imp)))
-    } else {
-      pca.X  = prcomp(scale(FCs)*t(replicate(dim(FCs)[1],imp)))
-    }
-      PC123 = pca.X$x[,1:3] #fetch 3 first principal components
-
-  #apply box.outliers to PCA components, to avoid extreme colour leverage of outliers
-  PC123.box = apply(PC123,2,box.outliers)
-  #change into colours, with transparancy
-  colours   = apply(PC123.box,1,function(x) rgb(x[1],x[2],x[3],alpha=alpha))
-  }
-  
-  #colour by top2 variables
-  if(colour_by=="top2") {
-    if(col_axis==1) {
-      sX = apply(X[,imp.ind[1:3]],2,box.outliers)
-    }else{
-      sX = apply(FCs[,imp.ind[1:3]],2,box.outliers) 
-    }
-    nX = apply(sX,2, function(x) (x-min(x))/(max(x)-min(x)))
-    nX = apply(nX,2, function(x) (x+.5) / 1.5)
-    colours = apply(nX,1,function(x) rgb(x[1],x[2],.1,alpha=alpha))
-  }
-  
-  ## colour by specific variable
-  if(is.numeric(colour_by)) {
-    if(col_axis==1) {
-      sX = apply(X[,imp.ind[rep(colour_by,3)]],2,box.outliers)
-    } else {
-      sX = apply(FCs[,imp.ind[rep(colour_by,3)]],2,box.outliers)
-    }
-    
-    nX = apply(sX,2, function(x) (x-min(x))/(max(x)-min(x)))
-    colours = apply(nX,1,function(x) rgb(x[1]^3,1-x[1]^3-(1-x[3])^3,(1-x[3])^3,alpha=alpha))
-    #rainbow colouring
-    #nx = X[,imp.ind[colour_by]]
-    #colours = rainbow(length(nx),start=0.2,alpha=alpha)[match(1:length(nx),sort(nx,index.return=T)$ix)]
-  }
-  
-  }
-  
-  #Save this colouring globally, for later 3D plotting
-  if(exists("forestFloor_graphics.env",envir=.GlobalEnv)) {
-    assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
-  } else {
-    local({forestFloor_graphics.env <- new.env()},envir=.GlobalEnv)
-    assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
-    #goto global env, make graphics.env, place colours here
-  }
-  
-  
-  
+# #obsolete  
+#   #set default.colour
+#   colours = "black"
+#   if(!is.null(external.col)) {
+#     colours = external.col
+#   } else {
+#     
+#   #following is multiple colour rules:
+#   
+#   if(colour_by=="PCA") {
+#   #make importance scaled PCA of X
+#     if(col_axis==1) {
+#       pca.X  = prcomp(scale(X)*t(replicate(dim(X)[1],imp)))
+#     } else {
+#       pca.X  = prcomp(scale(FCs)*t(replicate(dim(FCs)[1],imp)))
+#     }
+#       PC123 = pca.X$x[,1:3] #fetch 3 first principal components
+# 
+#   #apply box.outliers to PCA components, to avoid extreme colour leverage of outliers
+#   PC123.box = apply(PC123,2,box.outliers)
+#   #change into colours, with transparancy
+#   colours   = apply(PC123.box,1,function(x) rgb(x[1],x[2],x[3],alpha=alpha))
+#   }
+#   
+#   #colour by top2 variables
+#   if(colour_by=="top2") {
+#     if(col_axis==1) {
+#       sX = apply(X[,imp.ind[1:3]],2,box.outliers)
+#     }else{
+#       sX = apply(FCs[,imp.ind[1:3]],2,box.outliers) 
+#     }
+#     nX = apply(sX,2, function(x) (x-min(x))/(max(x)-min(x)))
+#     nX = apply(nX,2, function(x) (x+.5) / 1.5)
+#     colours = apply(nX,1,function(x) rgb(x[1],x[2],.1,alpha=alpha))
+#   }
+#   
+#   ## colour by specific variable
+#   if(is.numeric(colour_by)) {
+#     if(col_axis==1) {
+#       sX = apply(X[,imp.ind[rep(colour_by,3)]],2,box.outliers)
+#     } else {
+#       sX = apply(FCs[,imp.ind[rep(colour_by,3)]],2,box.outliers)
+#     }
+#     
+#     nX = apply(sX,2, function(x) (x-min(x))/(max(x)-min(x)))
+#     colours = apply(nX,1,function(x) rgb(x[1]^3,1-x[1]^3-(1-x[3])^3,(1-x[3])^3,alpha=alpha))
+#     #rainbow colouring
+#     #nx = X[,imp.ind[colour_by]]
+#     #colours = rainbow(length(nx),start=0.2,alpha=alpha)[match(1:length(nx),sort(nx,index.return=T)$ix)]
+#   }
+#  
+#   }
+#  
+#   #Save this colouring globally, for later 3D plotting
+#   if(exists("forestFloor_graphics.env",envir=.GlobalEnv)) {
+#     assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
+#   } else {
+#     local({forestFloor_graphics.env <- new.env()},envir=.GlobalEnv)
+#     assign("obs.indv.colours",colours,envir=forestFloor_graphics.env)
+#     #goto global env, make graphics.env, place colours here
+#   }
+#   
   
   ##plot the n.plots most important variables
   Xsd = 0:1 #initialize Xsd
@@ -141,7 +140,7 @@ plot.forestFloor = function(x,
         partial.contribution  = FCs[,imp.ind[i]]
       ),
       main = names(imp)[imp.ind[i]],
-      col = colours,  #colours are fetched from forestFloor_graphics.env
+      #obsolete#col = colours,  #colours are fetched from forestFloor_graphics.env
       ylim = list(NULL,range(FCs))[[limitY+1]], #same Yaxis if limitY == TRUE
       xlim = list(NULL,range(Xsd))[[limitX+1]],
       ...

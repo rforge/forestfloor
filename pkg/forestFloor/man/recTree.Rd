@@ -97,35 +97,28 @@ Soren Havelund Welling
 }
 
 \examples{
+rm(list=ls())
+library(forestFloor)
 #simulate data
-obs=1000 
+obs=2500
 vars = 6 
-X = data.frame(replicate(vars,rnorm(obs))) 
-Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 0.5 * rnorm(obs)) 
+
+X = data.frame(replicate(vars,rnorm(obs)))
+Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 1 * rnorm(obs))
+
 
 #grow a forest, remeber to include inbag
-library(randomForest)
-rfo=randomForest(X,Y,keep.inbag=TRUE)
+rfo=randomForest(X,Y,keep.inbag = TRUE,sampsize=1500,ntree=500)
 
-#compute topology
+#compute topology, Rectree is excuted within forestFloor.
+#See source-code of forestFloor function to for more details.
 ff = forestFloor(rfo,X)
 
 #print forestFloor
 print(ff) 
 
 #plot partial functions of most important variables first
-plot(ff,plot_seq=NULL,colour_by="dummy, no defined color-template",col_axis=1) 
+plot(ff) 
 
-#Non interacting functions are well displayed, whereas X3 and X4 are not
-#by applying different colourgradient, interactions reveal themself 
-plot(ff,plot_seq=NULL,colour_by=3,col_axis=1) 
-
-#in 3D the interaction between X3 and X reveals itself completely
-show3d(ff,x_cols=3,y_cols=4,z_cols=3:4) 
-
-#although no interaction, a joined additive effect of X1 and X2
-#can also be informative to display in 3D
-plot(ff,plot_seq=NULL,colour_by=4,col_axis=2) #use plot first to define colours 
-show3d(ff,x_cols=1,y_cols=2,z_cols=1:2) 
 
 }
