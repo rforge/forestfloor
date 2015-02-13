@@ -111,7 +111,7 @@ print(ff)
 
 #plot partial functions of most important variables first
 Colours1=fcol(ff,1)
-plot(ff,plot_seq=NULL,external.col=Colours1)
+plot(ff,plot_seq=NULL,col=Colours1)
 
 Colours2=fcol(ff,1:4)
 plot(ff,plot_seq=NULL,external.col=Colours2) 

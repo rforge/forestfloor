@@ -14,7 +14,7 @@ Method to plot an object of forestFloor-class. Plot partial feature contribution
                             #alpha="auto", #remove
                             limitY=TRUE,
                             order_by_importance=TRUE, 
-                            #external.col=NULL, #remove
+                            #col=NULL, #remove
                             cropXaxes=NULL, 
                             crop_limit=4,
                             ...)

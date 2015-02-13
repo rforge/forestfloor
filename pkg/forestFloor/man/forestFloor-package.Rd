@@ -58,19 +58,19 @@ plot(ff)
 #Non interacting functions are well displayed, whereas X3 and X4 are not
 #by applying different colourgradient, interactions reveal themself 
 Col = fcol(ff,3)
-plot(ff,external.col=Col) 
+plot(ff,col=Col) 
 
 #in 3D the interaction between X3 and X reveals itself completely
 show3d_new(ff,3:4,col=Col,plot.rgl=list(size=5)) 
 
 #although no interaction, a joined additive effect of X1 and X2
 Col = fcol(ff,1:2,X.m=FALSE,RGB=TRUE) #colour by FC-component FC1 and FC2 summed
-plot(ff,external.col=Col) 
+plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5)) 
 
 #...or two-way gradient is formed from FC-component X1 and X2.
 Col = fcol(ff,1:2,X.matrix=TRUE,alpha=0.8) 
-plot(ff,external.col=Col) 
+plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
 
 }
