@@ -83,7 +83,7 @@ this version
 }
 
 \seealso{
-\code{\link{plot.forestFloor}}, \code{\link{show3d}}
+\code{\link{plot.forestFloor}}, \code{\link{show3d_new}}
 }
 \examples{
 
