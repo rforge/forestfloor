@@ -93,7 +93,7 @@ Soren Havelund Welling
 }
 
 \examples{
-library(forestFloor)
+library(forestFloorStable)
 obs=4000 
 vars = 6 
 X = data.frame(replicate(vars,rnorm(obs))) 

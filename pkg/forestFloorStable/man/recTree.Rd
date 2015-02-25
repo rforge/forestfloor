@@ -98,7 +98,7 @@ Soren Havelund Welling
 
 \examples{
 rm(list=ls())
-library(forestFloor)
+library(forestFloorStable)
 #simulate data
 obs=2500
 vars = 6 
