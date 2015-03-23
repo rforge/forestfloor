@@ -25,7 +25,7 @@ Description: forrestFloor visualizes cross-validated topology-maps of randomFore
   overview of dynamics within a given regression problem dataset, allowing the user to decide
   for apropiate further modeling  maybe within a classical statistical framework or to stay
   within the RF-modeling and look deep into  the alluring topology of correlations and
-  local interactions
+  local interactions.
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.3)
