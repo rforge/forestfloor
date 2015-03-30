@@ -123,13 +123,13 @@ show3d_new = function(ff,
   if(length(FCi)==1) zaxis = FC else zaxis = apply(FC,1,combineFC) #if multiple FCis these will summed to one value.
   
   #fixing categorical features
-  as.numeric.factor <- function(x) {match(x,levels(x))}
+  as.numeric.factor <- function(x,rearrange=TRUE) {
+    if(rearrange) x = match(x,levels(droplevels(x))) else x = match(x,levels(x))
+  }
   if(is.factor(xaxis)) xaxis = as.numeric.factor(xaxis)
   if(is.factor(yaxis)) yaxis = as.numeric.factor(yaxis)
   if(is.factor(zaxis)) zaxis = as.numeric.factor(zaxis)
 
- 
-  
   #plotting points
   #merge current/user, wrapper arguments for plot3d in proritized order
   wrapper_arg = list(x=xaxis, y=yaxis, z=zaxis, col=col,
@@ -148,6 +148,9 @@ show3d_new = function(ff,
   do.call("persp3d",args=calling_arg)
   }
 }
+
+
+
 
 #f2 - show vec plot 2D and 3D
 vec.plot = function(model,X,i.var,grid.lines=100,VEC.function=mean,zoom=1,limitY=F,col="#20202050") {
