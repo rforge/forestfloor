@@ -11,7 +11,7 @@ This colour module colour observations by selected variables. PCA decomposes a s
 }
 
 \usage{
-fcol(ff, cols = NULL, X.matrix = TRUE, 
+fcol(ff, cols = NULL, orderByImportance = NULL,  X.matrix = TRUE, 
      hue = NULL, saturation = NULL, brightness = NULL,
      hue.range  = NULL, sat.range  = NULL, bri.range  = NULL,
      alpha = NULL, RGB = NULL, max.df=3,
@@ -26,6 +26,11 @@ fcol(ff, cols = NULL, X.matrix = TRUE,
   \item{cols}{
   vector of indices of columns to colour by, will refer to ff$X if X.matrix=T and else ff$FCmatrix. If ff itself is a matrix or data.frame, indices will refer to these coloums
   }
+  
+  \item{orderByImportance}{
+  logical, should cols refer to X column order or columns sorted by variable importance. Input must be of forestFloor -class to use this. Set to FALSE if no importance sorting is wanted. Otherwise leave as is.
+  }
+  
   \item{X.matrix}{
   logical, true will use feature matrix false will use feature contribution matrix. Only relvant if input is forestFloor object.
   }
@@ -113,6 +118,9 @@ print(ff)
 Colours1=fcol(ff,1)
 plot(ff,plot_seq=NULL,col=Colours1)
 
+#try to colour by first four variables, uses PCA du reduce system to 3-way gradient
+# (2.5 way more exactly as saturation and brightness by default have very limited ranges
+# to avoid gray - or overexposed color tones).
 Colours2=fcol(ff,1:4)
 plot(ff,plot_seq=NULL,external.col=Colours2) 
 

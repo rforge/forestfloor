@@ -39,7 +39,11 @@ plot.forestFloor = function(x,
   
   #make catogorical features numeric, save jitter.template
   jitter.template=rep(FALSE,dim(X)[2]) #list of what features are catagorical
-  as.numeric.factor <- function(x) {match(x,levels(x))}
+  as.numeric.factor <- function(x,rearrange=TRUE) {
+    if(is.numeric(x)) return(x)
+    if(rearrange) x = match(x,levels(droplevels(x))) else x = match(x,levels(x))
+    return(x)
+  }
   for(i in 1:dim(X)[2]) {
     if(is.factor(X[,i])) {
       jitter.template[i]=TRUE
@@ -124,11 +128,13 @@ show3d_new = function(ff,
   
   #fixing categorical features
   as.numeric.factor <- function(x,rearrange=TRUE) {
+    if(is.numeric(x)) return(x) #numeric variables are left unchanged
     if(rearrange) x = match(x,levels(droplevels(x))) else x = match(x,levels(x))
+    return(x)
   }
-  if(is.factor(xaxis)) xaxis = as.numeric.factor(xaxis)
-  if(is.factor(yaxis)) yaxis = as.numeric.factor(yaxis)
-  if(is.factor(zaxis)) zaxis = as.numeric.factor(zaxis)
+  xaxis = as.numeric.factor(xaxis)
+  yaxis = as.numeric.factor(yaxis)
+  zaxis = as.numeric.factor(zaxis)
 
   #plotting points
   #merge current/user, wrapper arguments for plot3d in proritized order
@@ -418,6 +424,7 @@ append.overwrite.alists= function(masterArgs,slaveArgs) {
 #sf9: colour function
 fcol = function(ff,
                 cols = NULL,
+                orderByImportance = NULL,
                 X.matrix = TRUE,
                 hue = NULL,
                 saturation = NULL,
@@ -451,13 +458,26 @@ fcol = function(ff,
   if(class(ff)=="forestFloor") {
     if(X.matrix) colM = ff$X else colM = ff$FCmatrix
     if(is.null(imp.weight)) imp.weight=TRUE
+    if(is.null(orderByImportance)) orderByImportance = TRUE
   } else {
     colM=ff
     if(is.null(imp.weight)) imp.weight=FALSE
+    if(is.null(orderByImportance)) orderByImportance = FALSE
   }
+  
+  #reorder colM by importance
+  if(orderByImportance) if(class(ff) == "forestFloor") {
+    colM = colM[,ff$imp_ind]
+  } else {
+    warning("orderByImportance=TRUE takes no effect for non 'forestFloor'-class. As if set to NULL or FALSE...")
+  }
+  
+  #check colM is either data.frame or matrix
   if(!class(colM) %in% c("data.frame","matrix")) {
-    stop(paste(class(colM),"is neither matrix or data.frame"))
+    stop(paste(class(colM),"input is neither matrix or data.frame"))
   }
+  
+  #convert matrix to data.frame
   colM = data.frame(colM)
   
   #checking selected cols
@@ -465,7 +485,6 @@ fcol = function(ff,
   if(length(cols)<1 || !is.numeric(cols) || any(!cols %in% 1:dim(colM)[2])) {
     stop("no cols selected or is not integer/numeric or wrong coloumns")
   }
-  print("here1")
   sel.colM = data.frame(colM[,cols])    #use only selected columns
   sel.cols = 1:length(cols) #update cols to match new col.indices of colM
   
@@ -483,10 +502,12 @@ fcol = function(ff,
     if(is.null(hue.range))  hue.range=2
   }
   
-  
-  
   #force catogorical features to become numeric
-   as.numeric.factor <- function(x) {match(x,levels(x))}
+  as.numeric.factor <- function(x,rearrange=TRUE) {
+    if(is.numeric(x)) return(x)
+    if(rearrange) x = match(x,levels(droplevels(x))) else x = match(x,levels(x))
+    return(x)
+  }
   for(i in 1:dim(sel.colM)[2]) {
     if(is.factor(sel.colM[,i])) {
       this.fac=as.numeric.factor(sel.colM[,i])
@@ -494,10 +515,9 @@ fcol = function(ff,
     }
     if(is.character(sel.colM[,i])) sel.colM[,i] = as.numeric(sel.colM[,i])
   } 
-  print("here2")
-  #restrain outliers by limit(std.dev) and normalize
-  sel.colM = box.outliers(sel.colM,limit=outlier.lim)
   
+  #restrain outliers by limit(std.dev) and normalize.
+  sel.colM = box.outliers(sel.colM,limit=outlier.lim)
   
   #inflating data by importance
   if(imp.weight && length(cols)>1) {
@@ -511,12 +531,11 @@ fcol = function(ff,
       sel.colM = sel.colM / max(sel.colM)
     } else {warning("importance weighting only possible for class 'forestFloor'")}
   }
-  print("here3")
+  
   #Setting up ranges for colours
   if(any(!c(class(hue),class(saturation),class(brightness)) %in% c("numeric","integer"))){
     stop("hue, saturation and brightness must be of class numeric or integer")
   }
-  
   #correct input to be within [0,1]
   hue = hue - floor(hue)
   saturation = max(min(saturation,1),0)
@@ -530,7 +549,6 @@ fcol = function(ff,
     if(is.null(alpha)) alpha=.7
     len.colM = box.outliers(sel.colM,limit=Inf)
     if(dim(len.colM)[2]==1) nX = as.numeric(len.colM[,1]) else nX = as.numeric(apply(len.colM,1,mean))
-    #Colours = sapply(nX,function(x) rgb(x^2.3,1-x^2.7-(1-x)^2.7,(1-x)^2.3,alpha=0.6))
     hsvcol    = t(sapply(nX,function(x) rgb2hsv(x^RGB.exp,
                                                 1-x^RGB.exp-(1-x)^RGB.exp,
                                                (1-x)^RGB.exp)))
@@ -548,11 +566,9 @@ fcol = function(ff,
 #     print(str(a))
     return(colours) #function terminates with these colours
   }
-  print("passed RGB")
-  
+    
   ############
   ##Colour system B: Hue, saturation, value, consist of a 1D, 2D and 3D scale
-  
   
   #if maxPC is less than n selected coloumns
   #centering, no scaling and PCA is applied
@@ -565,7 +581,6 @@ fcol = function(ff,
   } else {
     len.colM = box.outliers(sel.colM,limit=Inf)
   }
-  
   
   #define ranges if not defined for different dimensions
   if(is.null(hue.range)) {
@@ -611,7 +626,7 @@ fcol = function(ff,
     colours = hsv(hsvcol[,1],hsvcol[,2],hsvcol[,3],alpha=alpha)
   }  
   
-  #three way gradient
+  #three-way gradient
   if(col.df==3) {  
     hsvcol      = t(rgb2hsv(len.colM[,1],len.colM[,2],len.colM[,3]))
     #set hue
@@ -627,7 +642,7 @@ fcol = function(ff,
     hsvcol[,3]  = contain(span.bri)
     colours     = hsv(hsvcol[,1],hsvcol[,2],hsvcol[,3],alpha=alpha)
   }
-  print(sat.range)
+  
   return(colours)
 }
 

@@ -99,7 +99,7 @@ ff = forestFloor(rfo,X)
 print(ff) 
 
 #plot partial functions of most important variables first
-Col=fcol(ff,2)
+Col=fcol(ff,1)
 plot(ff,col=Col,order_by_importance=TRUE) 
 
 #the pure feature contributions
@@ -107,7 +107,7 @@ plot3d(ff$X[,2],ff$X[,3],apply(ff$FCmatrix[,2:3],1,sum),
        #add some colour gradients to ease visualization
        #box.outliers squese all observations in a 2 std.dev box
        #univariately for a vector or matrix and normalize to [0;1]
-       col=fcol(ff,2))
+       col=fcol(ff,2,orderByImportance=FALSE))
 
 
 

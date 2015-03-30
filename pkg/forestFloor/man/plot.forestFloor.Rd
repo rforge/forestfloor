@@ -99,7 +99,7 @@ plot(ff,order_by_importance=TRUE)
 
 #Non interacting functions are well displayed, whereas X3 and X4 are not
 #by applying different colourgradient, interactions reveal themself 
-Col=fcol(ff,3)
+Col=fcol(ff,3,orderByImportance=FALSE)
 plot(ff,col=Col) 
 
 #in 3D the interaction between X3 and X reveals itself completely
@@ -107,7 +107,7 @@ show3d_new(ff,3:4,col=Col)
 
 #although no interaction, a joined additive effect of X1 and X2
 #can also be informative to display in 3D
-Col = fcol(ff,2,X.matrix=FALSE)
+Col = fcol(ff,2,X.matrix=FALSE,orderByImportance=FALSE)
 plot(ff,col=Col) #use plot first to define colours 
 show3d_new(ff,1:2,
            col=Col,
