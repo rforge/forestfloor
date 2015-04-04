@@ -17,6 +17,7 @@ Method to plot an object of forestFloor-class. Plot partial feature contribution
                             #col=NULL, #remove
                             cropXaxes=NULL, 
                             crop_limit=4,
+                            compute_GOF = FALSE,
                             ...)
 }
 
@@ -49,6 +50,10 @@ a vector of indice numbers of which zooming of x.axis should look away from outl
 \item{crop_limit}{
 a number often between 1.5 and 5, referring limit in std.devs from the mean defining outliers
 if limit = 2, above selected plots will zoom to +/- 2 std.dev of the respective features.
+}
+
+\item{copmute_GOF}{
+Booleen TRUE/FALSE. Should the goodness of fit be computed for all plots and written in main titles?
 }
 
 \item{...}{

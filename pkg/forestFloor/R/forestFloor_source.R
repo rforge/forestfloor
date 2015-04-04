@@ -20,6 +20,7 @@ plot.forestFloor = function(x,
                             #external.col=NULL, #remove
                             cropXaxes=NULL, 
                             crop_limit=4,
+                            compute_GOF=FALSE,
                             ...)
   {
   
@@ -27,8 +28,17 @@ plot.forestFloor = function(x,
   par(mar=c(2,2,1,1),cex=.5) #changing par, narrowing plot margins, smaller points
   
   #short for phys.val and feature contribution in object
+  
   X = x$X
   FCs = x$FCmatrix
+  if(compute_GOF) { 
+    #compute goodness of fit of one way presentation
+    #leave-one-out k-nearest neighbor(guassian kernel), kknn package 
+    if(is.null(x$FCfit)) x = convolute_ff(ff) 
+    #retrieve fitted values and compare to actual feature contributions for every variable
+    GOFs = sapply(1:dim(X)[2],function(j) cor(x$FCfit[,j],x$FCmatrix[,j])^2)
+  }
+  
   
 #obsolete
 #   #Auto setting transparancy variable. The more obs, the more transparrency
@@ -80,7 +90,9 @@ plot.forestFloor = function(x,
         physical.value        = jitter(X[,imp.ind[i]],factor=jitter.template[imp.ind[i]]*2),
         partial.contribution  = FCs[,imp.ind[i]]
       ),
-      main = names(imp)[imp.ind[i]],
+      main = if(!compute_GOF) names(imp)[imp.ind[i]] else {
+        paste0(names(imp)[imp.ind[i]],",R²=",round(GOFs[imp.ind[i]],2))
+      },
       ylim = list(NULL,range(FCs))[[limitY+1]], #same Yaxis if limitY == TRUE
       xlim = list(NULL,range(Xsd))[[limitX+1]],
       ...
