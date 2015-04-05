@@ -133,8 +133,8 @@ show3d_new = function(ff,
   if(sortByImportance) imp_ind = ff$imp_ind else imp_ind = sort(ff$imp_ind)
   
   #fetch selected coloums from object
-  X = ff$X[,ff$imp_ind[Xi]]
-  FC = ff$FCmatrix[,ff$imp_ind[FCi]]
+  X = ff$X[,imp_ind[Xi]]
+  FC = ff$FCmatrix[,imp_ind[FCi]]
   
   #define xy coordinates from features and z from feature contributions
   xaxis = X[,1]
@@ -163,7 +163,7 @@ show3d_new = function(ff,
   #merge arguments again
   if(surface) {
     #compute grid
-  grid = convolute_grid(ff, Xvars=Xi, FCvars=FCi, limit=limit, grid=grid.lines, zoom=zoom,  userArgs.kknn = kknnGrid.args)
+  grid = convolute_grid(ff, Xvars=imp_ind[Xi], FCvars=imp_ind[FCi], limit=limit, grid=grid.lines, zoom=zoom,  userArgs.kknn = kknnGrid.args)
   wrapper_arg = alist(x=unique(grid[,2]),y=unique(grid[,3]),z=grid[,1],add=TRUE,alpha=0.2,col=c("grey","black")) #args defined in this wrapper function
   calling_arg = append.overwrite.alists(surf.rgl.args,wrapper_arg)   
   do.call("persp3d",args=calling_arg)
