@@ -129,9 +129,12 @@ show3d_new = function(ff,
   if(is.null(FCi)) FCi=Xi
   if(!all(FCi %in% 1:dim(ff$FCmatrix)[2]) && length(FCi)>0) stop("input FCi points to columns indices out of range of feature matrix ff$X")
   
+  #should Xi and FCi refer to coloumns sorted by importance?
+  if(sortByImportance) imp_ind = ff$imp_ind else imp_ind = sort(ff$imp_ind)
+  
   #fetch selected coloums from object
-  X = ff$X[,Xi]
-  FC = ff$FCmatrix[,FCi]
+  X = ff$X[,ff$imp_ind[Xi]]
+  FC = ff$FCmatrix[,ff$imp_ind[FCi]]
   
   #define xy coordinates from features and z from feature contributions
   xaxis = X[,1]
