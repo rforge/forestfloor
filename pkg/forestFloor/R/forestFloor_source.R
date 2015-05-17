@@ -461,7 +461,11 @@ fcol = function(ff,
   ##ssf8.1: is between function
   ib <- function(x, low, high) (x -low) * (high-x) > 0
   ##ssf8.2: move center range of vector at mid with new width of span
-  span <- function(x, mid, width) ((x-min(x))/(max(x)-min(x))-0.5)*width+mid
+  span <- function(x, mid, width) if(min(x)!=max(x)) {
+    ((x-min(x))/(max(x)-min(x))-0.5)*width+mid
+  } else {
+    x[] = mid #fix to avoid division by zero
+  }
   ##ssf8.3: compute widest range possible with given brightness or saturation
   auto.range = function(level,low=0,high=1) abs(min(level-low,high-level))*2
   ##ssf8.4: contain a vector such that any out side limits will be reduced to limits
@@ -470,7 +474,6 @@ fcol = function(ff,
     x[x<low ]=low
     x
   }
-  
   
   #get/check data.frame/matrix, convert to df, remove outliers and normalize
   if(class(ff)=="forestFloor") {
@@ -520,12 +523,13 @@ fcol = function(ff,
     if(is.null(hue.range))  hue.range=2
   }
   
-  #force catogorical features to become numeric
+  #function to force catogorical features to become numeric
   as.numeric.factor <- function(x,rearrange=TRUE) {
     if(is.numeric(x)) return(x)
     if(rearrange) x = match(x,levels(droplevels(x))) else x = match(x,levels(x))
     return(x)
   }
+  
   for(i in 1:dim(sel.colM)[2]) {
     if(is.factor(sel.colM[,i])) {
       this.fac=as.numeric.factor(sel.colM[,i])
