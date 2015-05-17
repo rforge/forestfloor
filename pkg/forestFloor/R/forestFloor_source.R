@@ -34,7 +34,7 @@ plot.forestFloor = function(x,
   if(compute_GOF) { 
     #compute goodness of fit of one way presentation
     #leave-one-out k-nearest neighbor(guassian kernel), kknn package 
-    if(is.null(x$FCfit)) x = convolute_ff(ff) 
+    if(is.null(x$FCfit)) x = convolute_ff(x) 
     #retrieve fitted values and compare to actual feature contributions for every variable
     GOFs = sapply(1:dim(X)[2],function(j) cor(x$FCfit[,j],x$FCmatrix[,j])^2)
   }
