@@ -91,7 +91,7 @@ plot.forestFloor = function(x,
         partial.contribution  = FCs[,imp.ind[i]]
       ),
       main = if(!compute_GOF) names(imp)[imp.ind[i]] else {
-        paste0(names(imp)[imp.ind[i]],",R²=",round(GOFs[imp.ind[i]],2))
+        paste0(names(imp)[imp.ind[i]],",R^2=",round(GOFs[imp.ind[i]],2))
       },
       ylim = list(NULL,range(FCs))[[limitY+1]], #same Yaxis if limitY == TRUE
       xlim = list(NULL,range(Xsd))[[limitX+1]],
