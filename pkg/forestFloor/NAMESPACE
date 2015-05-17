@@ -5,7 +5,7 @@ importFrom(Rcpp, evalCpp)
 importFrom(randomForest, randomForest)
 importFrom(trimTrees, cinbag)
 import(rgl)
-importFrom(kknn,train.kknn)
+import(kknn)
 #importFrom(FNN,knn.reg)
 S3method(plot,forestFloor)
 S3method(print,forestFloor)
@@ -19,4 +19,8 @@ export(forestFloor,
        convolute_ff2,
        convolute_grid,
        show3d_new,
-       fcol)
+       fcol,
+       randomForest,
+       plot3d,
+       kknn,
+       persp3d)
