@@ -102,14 +102,13 @@ print(ff)
 Col=fcol(ff,1)
 plot(ff,col=Col,order_by_importance=TRUE) 
 
+\dontrun{
 #the pure feature contributions
-plot3d(ff$X[,2],ff$X[,3],apply(ff$FCmatrix[,2:3],1,sum),
+plot3d::rgl(ff$X[,2],ff$X[,3],apply(ff$FCmatrix[,2:3],1,sum),
        #add some colour gradients to ease visualization
        #box.outliers squese all observations in a 2 std.dev box
        #univariately for a vector or matrix and normalize to [0;1]
        col=fcol(ff,2,orderByImportance=FALSE))
-
-
 
 #add grid convolution/interpolation
 #make grid with current function
@@ -139,8 +138,6 @@ grid123 = convolute_grid(ff,
 #Select a dimension to place in layers
 uni2 = unique(grid123[,2])  #2 points to X1 and FC1
 uni2=uni2[c(7,9,11,13,14,16,18)] #select some layers to visualize
-
-
 
 ## plotting any combination of X2 X3 in each layer(from red to green) having different value of X1
 count = 0
@@ -173,6 +170,7 @@ for(i in uni3) {
           unique(this34.plane[,3]),
           this34.plane[,1], add=add,
           col=rgb(count/length(uni3),1-count/length(uni3),0),alpha=0.1)
+} 
 }
 
  
