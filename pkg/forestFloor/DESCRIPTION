@@ -11,5 +11,4 @@ Description: Visualize Random Forrest with feature contributions.
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.3), randomForest, trimTrees, rgl, kknn 
-LinkingTo: Rcpp
-dependencies: TRUE 
+LinkingTo: Rcpp 
