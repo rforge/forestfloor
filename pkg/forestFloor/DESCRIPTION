@@ -1,11 +1,11 @@
 Package: forestFloor
 Type: Package
 Title: Visualising Non-linear Regression and Classification with Random Forrest
-Version: 1.3
-Date: 2015-01-12
+Version: 1.4
+Date: 2015-05-19
 Author: Soeren Havelund Welling
 Maintainer: Soeren Havelund Welling <SOWE@DTU.DK>
-Depends: R (>= 3.0.0)
+Depends: R (>= 3.0.0), kknn, trimTrees
 Suggests:
 Description: forrestFloor visualizes cross-validated topology-maps of randomForests(RF).
   Package enables users to understand a non-linear, regression problem or a binary
