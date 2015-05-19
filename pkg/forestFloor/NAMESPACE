@@ -1,12 +1,11 @@
 useDynLib(forestFloor)
-#exportPattern("^[[:alpha:]]+")
-#import(randomForest,trimTrees,rgl,FNN)
+
 importFrom(Rcpp, evalCpp)
 importFrom(randomForest, randomForest)
 importFrom(trimTrees, cinbag)
 import(rgl)
 import(kknn)
-#importFrom(FNN,knn.reg)
+
 S3method(plot,forestFloor)
 S3method(print,forestFloor)
 export(forestFloor,
@@ -24,3 +23,4 @@ export(forestFloor,
        plot3d,
        kknn,
        persp3d)
+
