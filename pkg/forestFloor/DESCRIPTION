@@ -5,11 +5,11 @@ Version: 1.4
 Date: 2015-05-19
 Author: Soeren Havelund Welling
 Maintainer: Soeren Havelund Welling <SOWE@DTU.DK>
-Depends: R (>= 3.0.0)
+Depends: R (>= 3.0.0), randomForest, trimTrees, rgl, kknn
 Suggests:
 Description: Visualize Random Forrest with feature contributions.
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.3), randomForest, trimTrees, rgl, kknn 
 LinkingTo: Rcpp
-Dependencies: TRUE 
+dependencies: TRUE 
