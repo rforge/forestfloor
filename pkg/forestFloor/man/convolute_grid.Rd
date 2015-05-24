@@ -74,7 +74,7 @@ convolute_grid           (ff,
 
 \examples{
  
-
+\dontrun{
 #simulate data
 obs=5000
 vars = 6 
@@ -102,7 +102,7 @@ print(ff)
 Col=fcol(ff,1)
 plot(ff,col=Col,order_by_importance=TRUE) 
 
-\dontrun{
+
 #the pure feature contributions
 plot3d::rgl(ff$X[,2],ff$X[,3],apply(ff$FCmatrix[,2:3],1,sum),
        #add some colour gradients to ease visualization
@@ -173,5 +173,4 @@ for(i in uni3) {
 } 
 }
 
- 
 }

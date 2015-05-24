@@ -98,6 +98,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 library(forestFloor)
 obs=4000 
 vars = 6 
@@ -124,6 +125,7 @@ plot(ff,plot_seq=NULL,col=Colours1)
 Colours2=fcol(ff,1:4)
 plot(ff,plot_seq=NULL,external.col=Colours2) 
 
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

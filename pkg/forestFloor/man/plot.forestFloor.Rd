@@ -84,6 +84,7 @@ Soren Havelund Welling
 
 
 \examples{
+\dontrun{
 #simulate data
 obs=1000
 vars = 6 
@@ -120,7 +121,7 @@ show3d_new(ff,1:2,
            surf.rgl=list(col=c("red","green")))
  
 }
-
+}
 \keyword{ multivariate }
 \keyword{ models }
 \keyword{ nonlinear }

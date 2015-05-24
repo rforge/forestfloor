@@ -87,11 +87,17 @@ plot.forestFloor = function(x,
     
     plot(
       data.frame( # data to plot
-        physical.value        = jitter(X[,imp.ind[i]],factor=jitter.template[imp.ind[i]]*2),
+        physical.value        = jitter(X[,imp.ind[i]],
+                                       factor=jitter.template[imp.ind[i]]*2),
         partial.contribution  = FCs[,imp.ind[i]]
       ),
       main = if(!compute_GOF) names(imp)[imp.ind[i]] else {
-        paste0(names(imp)[imp.ind[i]],",R^2=",round(GOFs[imp.ind[i]],2))
+        imp=imp
+        imp.ind = imp.ind
+        i=i
+        theName = names(imp)[imp.ind[i]]
+        theNumber = round(GOFs[imp.ind[i]],2)
+        paste0(theName,",R^2=",theNumber)
       },
       ylim = list(NULL,range(FCs))[[limitY+1]], #same Yaxis if limitY == TRUE
       xlim = list(NULL,range(Xsd))[[limitX+1]],

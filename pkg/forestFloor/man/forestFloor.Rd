@@ -86,7 +86,7 @@ this version
 \code{\link{plot.forestFloor}}, \code{\link{show3d_new}}
 }
 \examples{
-
+\dontrun{
 rm(list=ls())
 library(forestFloor)
 #simulate data
@@ -128,7 +128,7 @@ show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
 Col = fcol(ff,1:2,orderByImportance=FALSE,X.matrix=TRUE,alpha=0.8) 
 plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
-
+}
 }
 
 \keyword{ multivariate }

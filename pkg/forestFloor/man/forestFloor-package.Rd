@@ -31,7 +31,7 @@ Interpreting random forest classification models using a feature contribution me
 }
 
 \examples{
-
+\dontrun{
 rm(list=ls())
 library(forestFloor)
 #simulate data
@@ -73,7 +73,7 @@ show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
 Col = fcol(ff,1:2,X.matrix=TRUE,alpha=0.8,orderByImportance=FALSE) 
 plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
-
+}
 }
 
 

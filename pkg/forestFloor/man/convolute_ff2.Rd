@@ -55,6 +55,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 #simulate data
 obs=2500
 vars = 6 
@@ -75,7 +76,6 @@ fc34_convoluted = convolute_ff2(ff,Xvars=3:4,FCvars=3:4,  #arguments for the wra
                   userArgs.kknn = alist(kernel="gaussian",k=25)) #arguments for train.kknn
 
 #plot the joined convolution
-\dontrun{
 plot3d(ff$X[,3],ff$X[,4],fc34_convoluted,
        main="convolution of two feature contributions by their own vaiables",
        #add some colour gradients to ease visualization

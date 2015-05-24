@@ -97,6 +97,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 rm(list=ls())
 library(forestFloor)
 #simulate data
@@ -119,6 +120,6 @@ print(ff)
 
 #plot partial functions of most important variables first
 plot(ff) 
-
+}
 
 }

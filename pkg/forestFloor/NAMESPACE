@@ -19,8 +19,6 @@ export(forestFloor,
        convolute_grid,
        show3d_new,
        fcol,
-       randomForest,
-       plot3d,
-       kknn,
-       persp3d)
+       randomForest
+       )
 

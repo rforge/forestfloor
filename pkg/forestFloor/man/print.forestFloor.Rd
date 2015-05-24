@@ -34,6 +34,7 @@ Soren Havelund Welling
 
 
 \examples{
+\dontrun{
 #simulate data
 obs=1000 
 vars = 6 
@@ -48,5 +49,5 @@ ff = forestFloor(rfo,X)
 
 #print forestFloor
 print(ff) 
-
+}
 }

@@ -130,6 +130,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 rm(list=ls())
 library(forestFloor)
 #simulate data
@@ -171,6 +172,7 @@ Col = fcol(ff,1:2,X.matrix=TRUE,alpha=0.8)
 plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
 
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
