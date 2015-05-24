@@ -5,7 +5,7 @@ Version: 1.4
 Date: 2015-05-19
 Author: Soeren Havelund Welling
 Maintainer: Soeren Havelund Welling <SOWE@DTU.DK>
-Depends: R (>= 3.1.2)
+Depends:
 Suggest: 
 Description: This package enables to form visualization of high dimensional mapping curvature of random forests.
 SystemRequirements: OpenGL, GLU Library, zlib
