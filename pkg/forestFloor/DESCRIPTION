@@ -11,4 +11,5 @@ Description: This package enables to form visualization of high dimensional mapp
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.6), randomForest, rgl,  kknn, trimTrees
-LinkingTo: Rcpp 
+LinkingTo: Rcpp
+Repository: CRAN
