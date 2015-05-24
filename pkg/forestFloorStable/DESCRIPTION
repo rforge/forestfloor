@@ -8,24 +8,6 @@ Maintainer: Soeren Havelund Welling <SOWE@DTU.DK>
 Depends: R (>= 3.0.0), randomForest, trimTrees, rgl, kknn
 Suggest:
 Description: forrestFloor visualizes cross-validated topology-maps of randomForests(RF).
-  Package enables users to understand a non-linear, regression problem or a binary
-  classification problem through RF. Applying analysis on grown trees,
-  'feature contributions'  for each observation and each variable is calculated.
-  Thereby this packacge  can separate and plot non-linear main-effects by
-  each variable. Furthermore screening of iteractions and redundencies of variables.
-  Mapping of local interactions effects. Topologies are intrinsicly OOB cross-validated.
-  3D rgl.plots and automatic colouring   enables  easy visualization of interactions,
-  including automatic estimation of   response surface. Any plot include  the actual data
-  points allowing the user to evaluate wether enough is represerented in a given subspace
-  of a multivariate system to support an idea of a local effect/interaction. Specific
-  corlinearities will confound specific interactions. With RF in general comes also
-  robustness to noise, identification of most important variables, high adaptness  to
-  non-linear problems, robust default paremeter settings and native scaling of model to
-  either sparse or rich data problems. In all, this package is intended to provide a fast
-  overview of dynamics within a given regression problem dataset, allowing the user to decide
-  for apropiate further modeling  maybe within a classical statistical framework or to stay
-  within the RF-modeling and look deep into  the alluring topology of correlations and
-  local interactions
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.3)
