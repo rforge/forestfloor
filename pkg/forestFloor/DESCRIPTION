@@ -1,6 +1,6 @@
 Package: forestFloor
 Type: Package
-Title: Visulize Random Forests with Feature Contributions.
+Title: Visulize Random Forests with Feature Contributions
 Version: 1.4
 Date: 2015-05-19
 Author: Soeren Havelund Welling
@@ -11,5 +11,4 @@ Description: This package enables to form visualization of high dimensional mapp
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.6), randomForest, rgl,  kknn, trimTrees
-Repository: CRAN
 LinkingTo: Rcpp 
