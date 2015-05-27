@@ -21,6 +21,8 @@ plot.forestFloor = function(x,
                             cropXaxes=NULL, 
                             crop_limit=4,
                             compute_GOF=FALSE,
+                            plot_GOF=NULL,
+                            GOF_col = "#33333399",
                             ...)
   {
   
@@ -37,8 +39,16 @@ plot.forestFloor = function(x,
     if(is.null(x$FCfit)) x = convolute_ff(x) 
     #retrieve fitted values and compare to actual feature contributions for every variable
     GOFs = sapply(1:dim(X)[2],function(j) cor(x$FCfit[,j],x$FCmatrix[,j])^2)
+    FCfits = x$FCfit
   }
   
+  #plot goodness of fit only if available and not turned off
+  if(is.null(x$FCfit)) {
+    plot_GOF=FALSE
+    warning("cannot plot GOF without compute_GOF = TRUE")
+  } else {
+    if(is.null(plot_GOF)) plot_GOF=TRUE
+  }
   
 #obsolete
 #   #Auto setting transparancy variable. The more obs, the more transparrency
@@ -103,6 +113,12 @@ plot.forestFloor = function(x,
       xlim = list(NULL,range(Xsd))[[limitX+1]],
       ...
     )
+    if(plot_GOF) {
+      X_unique = sort(unique(X[,imp.ind[i]]))
+      X_unique.ind = match(X_unique,X[,imp.ind[i]])
+      FC_match = FCfits[X_unique.ind,imp.ind[i]]
+      points(X_unique,FC_match,col=GOF_col,type="l",lwd=3)
+    }
   }
   pars = with(pars,if(exists("pin")) {
     rm(pin)
@@ -247,9 +263,15 @@ convolute_ff = function(ff,
   
   #iterate for seleceted variables
   ff$FCfit = sapply(these.vars, function(this.var) {
-    Data = data.frame(fc=ff$FCmatrix[,this.var],x=ff$X[,this.var])
+    #force factors into numeric levels
+    Xcontext = ff$X[,this.var]
+    if(!is.numeric(Xcontext)) Xcontext = as.numeric(Xcontext)
+    #print(Xcontext)
+    #construct data.frame of FCs and context X
+    Data = data.frame(fc=ff$FCmatrix[,this.var],x=Xcontext)
+    #train and predict FC as function of X, LOO crosvalidated
     knn.obj = do.call("train.kknn",kknn.args)$fitted.values
-    knn.obj[[length(knn.obj)]]
+    knn.obj[[length(knn.obj)]] #extract crosvalidated predictions
   })
   ff  
 }
