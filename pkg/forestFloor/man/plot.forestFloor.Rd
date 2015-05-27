@@ -8,16 +8,14 @@ Method to plot an object of forestFloor-class. Plot partial feature contribution
 }
 \usage{
 \method{plot}{forestFloor} (x,
-                            #colour_by=1,  #remove
-                            #col_axis = 1, #remove
                             plot_seq=NULL, 
-                            #alpha="auto", #remove
                             limitY=TRUE,
                             order_by_importance=TRUE, 
-                            #col=NULL, #remove
                             cropXaxes=NULL, 
                             crop_limit=4,
                             compute_GOF = FALSE,
+                            plot_GOF = NULL,
+                            GOF_col = "#33333399",
                             ...)
 }
 
@@ -55,6 +53,15 @@ if limit = 2, above selected plots will zoom to +/- 2 std.dev of the respective 
 \item{compute_GOF}{
 Booleen TRUE/FALSE. Should the goodness of fit be computed for all plots and written in main titles?
 }
+
+\item{plot_GOF}{
+Booleen TRUE/FALSE. Should the goodness of fit be plotted as a line?
+}
+
+\item{GOF_col}{
+Color of plotted GOF line
+}
+
 
 \item{...}{
 ... other arguments passed to generic plot functions
