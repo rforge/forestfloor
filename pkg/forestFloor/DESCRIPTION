@@ -12,4 +12,3 @@ SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
 Imports: Rcpp (>= 0.11.6), randomForest, rgl,  kknn, trimTrees
 LinkingTo: Rcpp
-Repository: CRAN
