@@ -89,6 +89,7 @@ this version
 \examples{
 \dontrun{
 library(forestFloor)
+library(randomForest)
 #simulate data
 obs=2500
 vars = 6 

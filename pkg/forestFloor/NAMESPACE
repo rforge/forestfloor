@@ -18,7 +18,5 @@ export(forestFloor,
        convolute_ff2,
        convolute_grid,
        show3d_new,
-       fcol,
-       randomForest
-       )
+       fcol)
 

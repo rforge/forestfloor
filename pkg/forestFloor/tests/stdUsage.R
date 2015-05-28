@@ -1,4 +1,5 @@
 library(forestFloor)
+library(randomForest)
 #simulate data
 obs=2500
 vars = 6 
