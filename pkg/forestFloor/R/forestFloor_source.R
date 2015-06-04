@@ -26,7 +26,7 @@ plot.forestFloor = function(x,
 {
   
   pars = par(no.readonly = TRUE) #save previous graphical par(emeters)
-  par(mar=c(3,3,2,2),cex=.5) #changing par, narrowing plot margins, smaller points
+  par(mar=c(2,2,1,1),cex=.5) #changing par, narrowing plot margins, smaller points
   
   #short for phys.val and feature contribution in object
   
@@ -99,7 +99,7 @@ plot.forestFloor = function(x,
         i=i
         theName = names(imp)[imp.ind[i]]
         theNumber = round(GOFs[imp.ind[i]],2)
-        paste0(theName,",R^2=",theNumber)
+        paste0(theName,",R^2= ",theNumber)
       },
       ylim = list(NULL,range(FCs))[[limitY+1]], #same Yaxis if limitY == TRUE
       xlim = list(NULL,range(Xsd))[[limitX+1]],
