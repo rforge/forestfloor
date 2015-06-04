@@ -20,8 +20,7 @@ plot.forestFloor = function(x,
                             #external.col=NULL, #remove
                             cropXaxes=NULL, 
                             crop_limit=4,
-                            compute_GOF=FALSE,
-                            plot_GOF=NULL,
+                            plot_GOF=FALSE,
                             GOF_col = "#33333399",
                             ...)
   {
@@ -33,22 +32,15 @@ plot.forestFloor = function(x,
   
   X = x$X
   FCs = x$FCmatrix
-  if(compute_GOF) { 
+  if(plot_GOF && is.null(x$FCfit)) { 
     #compute goodness of fit of one way presentation
-    #leave-one-out k-nearest neighbor(guassian kernel), kknn package 
+    #leave-one-out k-nearest neighbor(guassian kernel), kknn package
+    print("compute goodness-of-fit with leave-one-out k-nearest neighbor(guassian kernel), kknn package")
     if(is.null(x$FCfit)) x = convolute_ff(x) 
     #retrieve fitted values and compare to actual feature contributions for every variable
-    GOFs = sapply(1:dim(X)[2],function(j) cor(x$FCfit[,j],x$FCmatrix[,j])^2)
-    FCfits = x$FCfit
   }
+  if(plot_GOF) GOFs = sapply(1:dim(X)[2],function(j) cor(x$FCfit[,j],x$FCmatrix[,j])^2)
   
-  #plot goodness of fit only if available and not turned off
-  if(is.null(x$FCfit)) {
-    plot_GOF=FALSE
-    warning("cannot plot GOF without compute_GOF = TRUE")
-  } else {
-    if(is.null(plot_GOF)) plot_GOF=TRUE
-  }
   
 #obsolete
 #   #Auto setting transparancy variable. The more obs, the more transparrency
@@ -101,7 +93,7 @@ plot.forestFloor = function(x,
                                        factor=jitter.template[imp.ind[i]]*2),
         partial.contribution  = FCs[,imp.ind[i]]
       ),
-      main = if(!compute_GOF) names(imp)[imp.ind[i]] else {
+      main = if(!plot_GOF) names(imp)[imp.ind[i]] else {
         imp=imp
         imp.ind = imp.ind
         i=i
@@ -116,7 +108,7 @@ plot.forestFloor = function(x,
     if(plot_GOF) {
       X_unique = sort(unique(X[,imp.ind[i]]))
       X_unique.ind = match(X_unique,X[,imp.ind[i]])
-      FC_match = FCfits[X_unique.ind,imp.ind[i]]
+      FC_match = x$FCfit[X_unique.ind,imp.ind[i]]
       points(X_unique,FC_match,col=GOF_col,type="l",lwd=3)
     }
   }

@@ -13,8 +13,7 @@ Method to plot an object of forestFloor-class. Plot partial feature contribution
                             order_by_importance=TRUE, 
                             cropXaxes=NULL, 
                             crop_limit=4,
-                            compute_GOF = FALSE,
-                            plot_GOF = NULL,
+                            plot_GOF = FALSE,
                             GOF_col = "#33333399",
                             ...)
 }
@@ -48,10 +47,6 @@ a vector of indice numbers of which zooming of x.axis should look away from outl
 \item{crop_limit}{
 a number often between 1.5 and 5, referring limit in std.devs from the mean defining outliers
 if limit = 2, above selected plots will zoom to +/- 2 std.dev of the respective features.
-}
-
-\item{compute_GOF}{
-Booleen TRUE/FALSE. Should the goodness of fit be computed for all plots and written in main titles?
 }
 
 \item{plot_GOF}{
@@ -112,20 +107,14 @@ plot(ff,order_by_importance=TRUE)
 
 #Non interacting functions are well displayed, whereas X3 and X4 are not
 #by applying different colourgradient, interactions reveal themself 
+#also a k-nearest neighbor fit is applied to evaluate goodness of fit
 Col=fcol(ff,3,orderByImportance=FALSE)
-plot(ff,col=Col) 
+plot(ff,col=Col,plot_GOF=TRUE) 
 
-#in 3D the interaction between X3 and X reveals itself completely
-show3d_new(ff,3:4,col=Col) 
-
-#although no interaction, a joined additive effect of X1 and X2
-#can also be informative to display in 3D
-Col = fcol(ff,2,X.matrix=FALSE,orderByImportance=FALSE)
-plot(ff,col=Col) #use plot first to define colours 
-show3d_new(ff,1:2,
-           col=Col,
-           plot.rgl=list(size=4),
-           surf.rgl=list(col=c("red","green")))
+#if ever needed, k-nearest neighbor parameters for goodness-of-fit can be access through convolute_ff
+#a new fit will be calculated and added to forstFloor object as ff$FCfit
+ff = convolute_ff(ff,userArgs.kknn=alist(kernel="epanechnikov",kmax=5))
+plot(ff,col=Col,plot_GOF=TRUE)
  
 }
 }
