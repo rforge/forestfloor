@@ -2,7 +2,7 @@ Package: forestFloor
 Type: Package
 Title: Visualizes Random Forests with Feature Contributions
 Version: 1.5
-Date: 2015-05-19
+Date: 2015-06-24
 Author: Soeren Havelund Welling
 Maintainer: Soeren Havelund Welling <SOWE@DTU.DK>
 Depends:
