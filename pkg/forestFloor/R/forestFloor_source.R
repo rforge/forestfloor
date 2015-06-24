@@ -26,7 +26,7 @@ plot.forestFloor = function(x,
 {
   
   pars = par(no.readonly = TRUE) #save previous graphical par(emeters)
-  par(mar=c(2,2,1,1),cex=.5) #changing par, narrowing plot margins, smaller points
+  par(mar=c(2.2,2.2,1.2,1.2),cex=.5) #changing par, narrowing plot margins, smaller points
   
   #short for phys.val and feature contribution in object
   
