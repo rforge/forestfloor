@@ -6,9 +6,9 @@ Date: 2015-06-24
 Author: Soeren Havelund Welling
 Maintainer: Soeren Havelund Welling <SOWE@DTU.DK>
 Depends:
-Suggests:
+Suggests: randomForest
 Description: Enables users to form appropriate visualizations of high dimensional mapping curvatures of random forests.
 SystemRequirements: OpenGL, GLU Library, zlib
 License: GPL-2
-Imports: Rcpp (>= 0.11.3), randomForest, rgl,  kknn, trimTrees
+Imports: Rcpp (>= 0.11.3), rgl,  kknn, trimTrees
 LinkingTo: Rcpp
