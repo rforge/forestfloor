@@ -101,7 +101,7 @@ plot(ff,order_by_importance=TRUE)
 Col=fcol(ff,3,orderByImportance=FALSE)
 plot(ff,col=Col,plot_GOF=TRUE) 
 
-#if ever needed, k-nearest neighbor parameters for goodness-of-fit can be access through convolute_ff
+#if needed, k-nearest neighbor parameters for goodness-of-fit can be access through convolute_ff
 #a new fit will be calculated and added to forstFloor object as ff$FCfit
 ff = convolute_ff(ff,userArgs.kknn=alist(kernel="epanechnikov",kmax=5))
 plot(ff,col=Col,plot_GOF=TRUE)
