@@ -45,3 +45,4 @@ show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5),sortByImportance=FALSE)
 Col = fcol(ff,1:2,orderByImportance=FALSE,X.matrix=TRUE,alpha=0.8) 
 plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5),sortByImportance=FALSE)
+

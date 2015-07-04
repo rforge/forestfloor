@@ -1,7 +1,6 @@
 useDynLib(forestFloor)
 
 importFrom(Rcpp, evalCpp)
-importFrom(trimTrees, cinbag)
 import(kknn)
 
 importFrom(stats,
@@ -9,16 +8,26 @@ importFrom(stats,
            prcomp,
            predict)
 
+#graphicals
 importFrom(graphics,
            par,
            plot,
            points)
-
 importFrom(grDevices,
            rgb2hsv,
            hsv)           
-
 import(rgl)
+
+importFrom(ggplot2,
+           aes,
+           ggplot,
+           ggplotGrob,
+           geom_point,
+           xlab,
+           ylab)
+
+importFrom(gridExtra,grid.arrange)
+
 
 S3method(plot,forestFloor)
 S3method(print,forestFloor)
@@ -33,4 +42,6 @@ export(forestFloor,
        convolute_ff2,
        convolute_grid,
        show3d_new,
-       fcol)
+       fcol,
+       ggPlotForestFloor,
+       ggplotGrob)

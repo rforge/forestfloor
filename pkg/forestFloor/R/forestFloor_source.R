@@ -810,3 +810,48 @@ forestFloor = function(rfo,X,calc_np=FALSE) {
   class(out) = "forestFloor"
   return(out)
 }
+
+
+##experimental function to forestFloor 2d with ggplot2
+ggPlotForestFloor = function(
+  ff, #a forestFloor object
+  plot_seq=NULL, #a sequence of windows to plot
+  col=NULL, # a colour vector of N length, use fcol
+  orderByImportance = TRUE
+) {
+  if(is.null(plot_seq)) plot_seq = 1:min(12,dim(ff$X)[2])
+  if(is.null(col)) col.points = fcol(ff) else col.points = col
+  if(orderByImportance) {
+    if(is.null(ff$imp_ind)) imp.ind = 1:max(plot_seq) else imp.ind=ff$imp_ind
+  } else {
+    imp.ind = 1:max(Xi,FCi)
+  }
+  
+  print(imp.ind)
+  
+#define plotting of one frame
+make.one.frame = function(ff,Xi,FCi,col.points,imp.ind) {
+    #if not importance sorting, sort by training set col order
+    
+    
+    #get requested dataset
+    df = data.frame(X = ff$FCm[,imp.ind[FCi]],
+                    FC= ff$X  [,imp.ind[Xi]]  )
+    #start plot plot points
+    h.out  <- ggplot(df,aes(FC,X)) + 
+      geom_point(col = col.points) +
+      xlab(names(ff$X)[imp.ind[Xi]]) +
+      ylab("")
+  }
+  
+  #plot all desired frmes
+  all.ggplots = lapply(plot_seq, function(i) {
+    make.one.frame(ff=ff,
+                   Xi=i,
+                   FCi=i,
+                   col.points=col.points,
+                   imp.ind=imp.ind)
+  })
+  
+  do.call(grid.arrange,c(all.ggplots)) 
+}
