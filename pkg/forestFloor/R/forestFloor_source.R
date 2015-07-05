@@ -811,44 +811,49 @@ forestFloor = function(rfo,X,calc_np=FALSE) {
   return(out)
 }
 
-
+#globalVariables("FC","X")
 ##experimental function to forestFloor 2d with ggplot2
 ggPlotForestFloor = function(
   ff, #a forestFloor object
   plot_seq=NULL, #a sequence of windows to plot
   col=NULL, # a colour vector of N length, use fcol
   orderByImportance = TRUE
-) {
-  if(is.null(plot_seq)) plot_seq = 1:min(12,dim(ff$X)[2])
-  if(is.null(col)) col.points = fcol(ff) else col.points = col
+  ) {
+  
+  if(is.null(plot_seq)) plot_seq = 1:max(6,dim(ff$X)[2])
+  if(is.null(col)) col.points=fcol(ff)
   if(orderByImportance) {
+    #if order by importance but no importance in forestFloor object
+    #then create a vector with same order as training set
     if(is.null(ff$imp_ind)) imp.ind = 1:max(plot_seq) else imp.ind=ff$imp_ind
   } else {
-    imp.ind = 1:max(Xi,FCi)
+    imp.ind = 1:dim(ff$X)[2]
   }
+  thisVar=1 #declare this to kill a R check note
+  print(plot_seq)
+  #define plotting of one frame
   
-  print(imp.ind)
-  
-#define plotting of one frame
-make.one.frame = function(ff,Xi,FCi,col.points,imp.ind) {
-    #if not importance sorting, sort by training set col order
+  make.one.frame = function(ff=ff,
+                            thisVar=thisVar,
+                            col.points=col.points,
+                            imp.ind=imp.ind) {
+  #if not importance sorting, sort by training set col order
     
     
     #get requested dataset
-    df = data.frame(X = ff$FCm[,imp.ind[FCi]],
-                    FC= ff$X  [,imp.ind[Xi]]  )
+    df = data.frame(X = ff$FCmatrix[,imp.ind[thisVar]],
+                    FC= ff$X  [,imp.ind[thisVar]]  )
     #start plot plot points
-    h.out  <- ggplot(df,aes(FC,X)) + 
+    h.out  <- ggplot(df,aes_string("FC","X")) + 
       geom_point(col = col.points) +
-      xlab(names(ff$X)[imp.ind[Xi]]) +
+      xlab(names(ff$X)[imp.ind[thisVar]]) +
       ylab("")
   }
   
-  #plot all desired frmes
-  all.ggplots = lapply(plot_seq, function(i) {
+  #plot all desired frmesm
+  all.ggplots = lapply(plot_seq, function(thisVar) {
     make.one.frame(ff=ff,
-                   Xi=i,
-                   FCi=i,
+                   thisVar=thisVar,
                    col.points=col.points,
                    imp.ind=imp.ind)
   })

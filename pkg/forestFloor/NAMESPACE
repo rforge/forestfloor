@@ -19,7 +19,7 @@ importFrom(grDevices,
 import(rgl)
 
 importFrom(ggplot2,
-           aes,
+           aes_string,
            ggplot,
            ggplotGrob,
            geom_point,
