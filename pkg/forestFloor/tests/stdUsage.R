@@ -9,7 +9,7 @@ Y = with(X, X1^2 + sin(X2*pi) + 2 * X3 * X4 + 1 * rnorm(obs))
 
 
 #grow a forest, remeber to include inbag
-rfo=randomForest(X,Y,keep.inbag = TRUE,sampsize=1500,ntree=500)
+rfo=randomForest(X,Y,keep.inbag = TRUE,sampsize=500,ntree=100)
 
 #compute topology
 ff = forestFloor(rfo,X)
