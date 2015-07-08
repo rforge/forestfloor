@@ -19,9 +19,7 @@ plot(ff,compute_GOF=T,plot_GOF=T,cex=.7,
      colLists=list(c("#FF0000A5"),
                    c("#00FF0050"),
                    c("#0000FF35")))
-
-a
-# 
+ 
 # #plot all effect 2D only
 # pars = plot_K3(ff,Xvars=0,restore_par=F,zoom.fit=NULL,var.col=NULL,fig.cols=2,fig.rows=1,
 #                fig3d=F,includeTotal=T,auto.alpha=.4,set_pars=T)
