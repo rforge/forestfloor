@@ -1,8 +1,8 @@
 
 # Methods:
 #m1 print output
-print.forestFloor = function(x,...) {
-  cat("this is a forestFloor('x') object \n
+print.forestFloor_regression = function(x,...) {
+  cat("this is a forestFloor_regression object \n
       this object can be plotted in 2D with plot(x), see help(plot.forestFloor) \n
       this object can be plotted in 3D with show3d(x), see help(show3d) \n
       \n
@@ -10,7 +10,7 @@ print.forestFloor = function(x,...) {
 }
 
 #m2 plot output
-plot.forestFloor = function(x,
+plot.forestFloor_regression = function(x,
                             #colour_by=1,  #remove
                             #col_axis = 1, #remove
                             plot_seq=NULL, 
@@ -22,8 +22,7 @@ plot.forestFloor = function(x,
                             crop_limit=4,
                             plot_GOF=FALSE,
                             GOF_col = "#33333399",
-                            ...)
-{
+                            ...){
   
   pars = par(no.readonly = TRUE) #save previous graphical par(emeters)
   par(mar=c(2.2,2.2,1.2,1.2),cex=.5) #changing par, narrowing plot margins, smaller points
@@ -119,75 +118,6 @@ plot.forestFloor = function(x,
   par(pars)
 }
 
-#f1a 3d show function
-show3d_new = function(ff,
-                      Xi  = 1:2,
-                      FCi = NULL,
-                      col = "#12345678",    
-                      sortByImportance = TRUE,
-                      surface=TRUE,   
-                      combineFC = sum,  
-                      zoom=1.2,       
-                      grid.lines=30,  
-                      limit=3, 
-                      kknnGrid.args = alist(),  
-                      plot.rgl.args = alist(),  
-                      surf.rgl.args = alist()   
-) {
-  if(class(ff)!="forestFloor") stop("ff, must be of class forestFloor")
-  if(length(Xi)!=2) {
-    warning("Xi should be of length 2, if 1 first elements is used twice, if >2 only two first elements is used")
-    if(length(Xi) > 2) Xi=Xi[1:2] else Xi = Xi[c(1,1)]
-  }
-  if(!all(Xi %in% 1:dim(ff$X)[2]))   stop( "input  Xi points to columns indices out of range of feature matrix ff$X")
-  if(is.null(FCi)) FCi=Xi
-  if(!all(FCi %in% 1:dim(ff$FCmatrix)[2]) && length(FCi)>0) stop("input FCi points to columns indices out of range of feature matrix ff$X")
-  
-  #should Xi and FCi refer to coloumns sorted by importance?
-  if(sortByImportance) {
-    Xi  = ff$imp_ind[ Xi]
-    FCi = ff$imp_ind[FCi]
-  }
-  
-  #fetch selected coloums from object
-  X = ff$X[,Xi]
-  FC = ff$FCmatrix[,FCi]
-  
-  #define xy coordinates from features and z from feature contributions
-  xaxis = X[,1]
-  yaxis = X[,2]
-  if(length(FCi)==1) zaxis = FC else zaxis = apply(FC,1,combineFC) #if multiple FCis these will summed to one value.
-  
-  #fixing categorical features
-  as.numeric.factor <- function(x,rearrange=TRUE) {
-    if(is.numeric(x)) return(x) #numeric variables are left unchanged
-    if(rearrange) x = match(x,levels(droplevels(x))) else x = match(x,levels(x))
-    return(x)
-  }
-  xaxis = as.numeric.factor(xaxis)
-  yaxis = as.numeric.factor(yaxis)
-  zaxis = as.numeric.factor(zaxis)
-  
-  #plotting points
-  #merge current/user, wrapper arguments for plot3d in proritized order
-  wrapper_arg = list(x=xaxis, y=yaxis, z=zaxis, col=col,
-                     xlab=names(X)[1],ylab=names(X)[2],zlab=paste(names(ff$X[,FCi]),collapse=" - "),
-                     alpha=.4,size=3,scale=.7,avoidFreeType = TRUE,add=FALSE)
-  calling_arg = append.overwrite.alists(plot.rgl.args,wrapper_arg)
-  do.call("plot3d",args=calling_arg)
-  
-  #plotting surface
-  #merge arguments again
-  if(surface) {
-    #compute grid
-    grid = convolute_grid(ff, Xvars=Xi,FCvars=FCi, limit=limit, grid=grid.lines, zoom=zoom,  userArgs.kknn = kknnGrid.args)
-    wrapper_arg = alist(x=unique(grid[,2]),y=unique(grid[,3]),z=grid[,1],add=TRUE,alpha=0.2,col=c("grey","black")) #args defined in this wrapper function
-    calling_arg = append.overwrite.alists(surf.rgl.args,wrapper_arg)   
-    do.call("persp3d",args=calling_arg)
-  }
-}
-
-
 
 
 #f2 - show vec plot 2D and 3D
@@ -272,12 +202,12 @@ convolute_ff = function(ff,
 #f3 input a forestFloor object, as convolute_ff but do not iterate all variables. Instead wrapper will use
 #kknn to convolute a designated featureContribution with designated features - oftenly the corresponding features.
 convolute_ff2 = function(ff,
-                         Xvars,
-                         FCvars = NULL,
+                         Xi,
+                         FCi = NULL,
                          k.fun=function() round(sqrt(n.obs)/2),
                          userArgs.kknn = alist(kernel="gaussian")
 ) {
-  if(is.null(FCvars)) FCvars = Xvars
+  if(is.null(FCi)) FCi = Xi
   n.obs=dim(ff$X)[1]
   k=k.fun()
   
@@ -286,12 +216,12 @@ convolute_ff2 = function(ff,
   kknn.args=append.overwrite.alists(userArgs.kknn,defaultArgs.kknn)
   
   #collect coloumns
-  if(length(FCvars)>1) {
-    fc = apply(ff$FCmatrix[,FCvars],1,sum)
+  if(length(FCi)>1) {
+    fc = apply(ff$FCmatrix[,FCi],1,sum)
   } else {
-    fc = ff$FCmatrix[,FCvars]
+    fc = ff$FCmatrix[,FCi]
   }
-  x = ff$X[,Xvars]
+  x = ff$X[,Xi]
   
   #compute topology
   Data = data.frame(fc=fc,x=x)
@@ -302,8 +232,8 @@ convolute_ff2 = function(ff,
 #f4 input a forestFloor object, as convolute_ff but do not iterate all variables. Instead wrapper will use
 #kknn to convolute a designated featureContribution with designated features - oftenly the corresponding features.
 convolute_grid = function(ff,
-                          Xvars,
-                          FCvars = NULL,
+                          Xi,
+                          FCi = NULL,
                           grid = 30,
                           limit = 3,
                           zoom = 3,
@@ -312,17 +242,17 @@ convolute_grid = function(ff,
 ) {
   
   #input defaults
-  if(is.null(FCvars)) FCvars = Xvars
+  if(is.null(FCi)) FCi = Xi
   n.obs=dim(ff$X)[1]
   k=k.fun() # will be overided if a "k=" argument is provided in userArgs.kknn-list
   
   #collect coloumns of data
-  if(length(FCvars)>1) {
-    fc = apply(ff$FCmatrix[,FCvars],1,sum)
+  if(length(FCi)>1) {
+    fc = apply(ff$FCmatrix[,FCi],1,sum)
   } else {
-    fc = ff$FCmatrix[,FCvars]
+    fc = ff$FCmatrix[,FCi]
   }
-  X = ff$X[,Xvars]
+  X = ff$X[,Xi]
   
   #make grid, or use external grid if provided
   if(length(grid)==1) {
@@ -355,7 +285,7 @@ convolute_grid = function(ff,
   }
   
   #prepare data
-  Data = data.frame(fc=fc,x=ff$X[,Xvars])
+  Data = data.frame(fc=fc,x=ff$X[,Xi])
   gridX = data.frame(x=gridX)
   
   #merge user args and args of this wrapper function, user args have priority
@@ -412,43 +342,6 @@ box.outliers = function(x,limit=1.5,normalize=TRUE) {
   return(sx)
 }
 
-# #sf7  - calculate deviance from surface
-# surf.error = function() {
-#   outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
-#     this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=T) #pick a bootstrap from samples             
-#     sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
-#     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
-#     out=knn.reg(train=sXY,
-#                 test=sgridXY,
-#                 y=axisval$z[this.boot.ind],
-#                 k=k,
-#                 algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
-#   })
-# }
-
-# #sf7 estimate surface with kNNbag, depends on "sf5 - scale.by"
-# kNN.surf = function(knnBag,
-#                     XY,
-#                     gridXY,
-#                     k,
-#                     y,
-#                     bag.ratio=.8,
-#                     replace=TRUE) {
-#   outs=replicate(knnBag, {  #the following is replicated/performed severeal ~20 times
-#     this.boot.ind = sample(dim(XY)[1]*bag.ratio,replace=TRUE) #pick a bootstrap from samples             
-#     sXY = scale(XY[this.boot.ind,])  #scale bootstrap to uni-variance
-#     sgridXY = scale.by(scale.this=gridXY,by.this=sXY) #let grid be scaled as this bootstrap was scaled to sXY
-#     out=knn.reg(train=sXY,
-#                 test=sgridXY,
-#                 y=y[this.boot.ind],
-#                 k=k,
-#                 algorithm="kd_tree")$pred  #predict grid from bootstrap of samples
-#   })
-#   out = apply(outs,1,mean) # collect predictions
-#   return(out)
-# }
-
-
 
 #sf8 neat function to help increase adaptability of wrappers, default args defined by wrapper. User can 
 #input an alist and by this function the wrapper will append new args and overwrite conflicting arguments.
@@ -459,6 +352,7 @@ append.overwrite.alists= function(masterArgs,slaveArgs) {
   masterArgs.to.append = !(names(masterArgs) %in% names(slaveArgs))
   c(slaveArgs,masterArgs[masterArgs.to.append])
 }
+
 #sf9: colour function
 fcol = function(ff,
                 cols = NULL,
@@ -478,6 +372,10 @@ fcol = function(ff,
                 outlier.lim = 3,
                 RGB.exp = NULL) {
   
+  if(!X.matrix) if(class(ff)=="forestFloor_multiClass")
+    stop("cannot colour by feature contributions for object of class
+         'forestFloor_multiClass'. Set X.matrix=TRUE")
+  
   ##ssf8.1: is between function
   ib <- function(x, low, high) (x -low) * (high-x) > 0
   ##ssf8.2: move center range of vector at mid with new width of span
@@ -496,7 +394,7 @@ fcol = function(ff,
   }
   
   #get/check data.frame/matrix, convert to df, remove outliers and normalize
-  if(class(ff)=="forestFloor") {
+  if(class(ff) %in% c("forestFloor_regression","forestFloor_multiClass")) {
     if(X.matrix) colM = ff$X else colM = ff$FCmatrix
     if(is.null(imp.weight)) imp.weight=TRUE
     if(is.null(orderByImportance)) orderByImportance = TRUE
@@ -507,7 +405,8 @@ fcol = function(ff,
   }
   
   #reorder colM by importance
-  if(orderByImportance) if(class(ff) == "forestFloor") {
+  if(orderByImportance) if(class(ff) %in% c("forestFloor_regression",
+                                            "forestFloor_multiClass")) {
     colM = colM[,ff$imp_ind]
   } else {
     warning("orderByImportance=TRUE takes no effect for non 'forestFloor'-class. As if set to NULL or FALSE...")
@@ -563,7 +462,7 @@ fcol = function(ff,
   
   #inflating data by importance
   if(imp.weight && length(cols)>1) {
-    if(class(ff)=="forestFloor") {
+    if(class(ff) %in% c("forestFloor_regression","forestFloor_multiClass")) {
       sel.imp = ff$importance[cols]
       non.negative.imp = sel.imp+min(sel.imp)
       sumnorm.imp =  non.negative.imp / sum(non.negative.imp)
@@ -688,70 +587,122 @@ fcol = function(ff,
   return(colours)
 }
 
-
-
-forestFloor = function(rfo,X,calc_np=FALSE) { 
+forestFloor = function(rf.fit,
+                       X,
+                       calc_np = FALSE,
+                       binary_reg = FALSE,
+                       ...) {
+  Class = class(rf.fit)
+  #randomForest::randomForest or trimTrees::cinbag
+  if(Class=="randomForest") {
+  Type = rf.fit$type
+  #changed classification to binary regression if requested and only two classes
+  print(rf.fit$forest$nclass)
+  if(binary_reg) {
+    if(!is.null(rf.fit$forest$nclass) && rf.fit$forest$nclass==2) {
+      Type="regression"
+    } else {
+      warning("binary_reg=T is not possible for >2 classes. 
+               Continue computation as multiClass")
+    }
+  }
+   
+  #dispatch either forestFloor_regression(and binary) or multiClassification
+    switch(Type,
+           regression =     return(forestFloor_randomForest_regression(rf.fit,
+                                                                       X,
+                                                                       calc_np,
+                                                                       binary_reg,
+                                                                       ...)),
+           classification = return(forestFloor_randomForest_multiClass(rf.fit,
+                                                                       X,
+                                                                       calc_np,
+                                                                       binary_reg,
+                                                                       ...)),
+           stop("type of randomForest object is neither 'regression' or 'classification', (RF.fit$type==?)"))
+  }
   
-  #check the RFobject have a inbag
-  if(is.null(rfo$inbag)) stop("input randomForest-object have no inbag, set keep.inbag=T,
+  #other models...
+  if(Class=="forestFloor_external") {
+    print("forestFloor_external is a standardised treemodelfit which is not implemented yet")
+    return("... cold emptyness")
+  }
+  
+  #if not classses recognized
+  stop("this class is not yet supported. Make me a request on email and we can talk about it")
+
+}
+   
+
+##method to compute forestFloor_regression
+forestFloor_randomForest_regression <- function(rf.fit,
+                                                  X,
+                                                  calc_np = FALSE,
+                                                  binary_reg = FALSE,
+                                                  ...) { 
+  
+  #check the rf.fitbject have a inbag
+  if(is.null(rf.fit$inbag)) stop("input randomForest-object have no inbag, set keep.inbag=T,
                               try, randomForest(X,Y,keep.inbag=T) for regression where Y is numeric
                               and, cinbag(X,Y,keep.inbag=T,keep.forest=T) for binary-class where Y is factor
                               ..cinbag is from trimTrees package...
-                              error condition: if(is.null(rfo$inbag))")
+                              error condition: if(is.null(rf.fit$inbag))")
   
   #make node status a integer matrix
-  ns = rfo$forest$nodestatus
+  ns = rf.fit$forest$nodestatus
   storage.mode(ns) = "integer"
   
   
   #translate binary classification RF-object, to regression mode
-  if(rfo$type=="classification") {
-    if(length(levels(rfo$y))!=2) stop("no multiclass, must be binary classification.
-                                      error condition: if(length(levels(rfo$y))!=2")
+  if(rf.fit$type=="classification") {
+    if(length(levels(rf.fit$y))!=2) stop("must be binary classification to use regression mode.
+                                      error condition: if(length(levels(rf.fit$y))!=2")
     print("RF is classification, converting factors/categories to numeric 0 an 1")
-    Y = as.numeric((rfo$y))-1
-    cat(" defining",levels(rfo$y)[1]," as 0\n defining",levels(rfo$y)[2],"as 1")
-    rfo$forest$leftDaughter  = rfo$forest$treemap[,1,] #translate daughter representation to regression mode
-    rfo$forest$rightDaughter = rfo$forest$treemap[,2,] 
+    Y = as.numeric((rf.fit$y))-1
+    cat(" defining",levels(rf.fit$y)[1]," as 0\n defining",levels(rf.fit$y)[2],"as 1")
+    rf.fit$forest$leftDaughter  = rf.fit$forest$treemap[,1,] #translate daughter representation to regression mode
+    rf.fit$forest$rightDaughter = rf.fit$forest$treemap[,2,] 
     ns[ns==1] = -3  ##translate nodestatus representation to regression mode
-    if(is.null("rfo$inbagCount")) stop("classification topology not supported with randomForest() {randomForest}
-                                       Grow forest with cinbag::trimTrees instead of randomForest(). The two
-                                       functions are identical, except cinbag() entails a more detailed inbag record,
-                                       which is needed to estimate binary node probabilities.
-                                       error condition:  if(is.null('rfo$inbagCount'))")
-    
+    if(is.null("rf.fit$inbagCount") && (is.null(rf.fit$call$replace) || rf.fit$call$replace)) {
+stop("cannot compute classification forestFloor for
+randomForest::randomForest when trained with replace=T.
+Train forest with cinbag::trimTrees instead of randomForest().
+Or set reaplace = FALSE.  The two functions are identical,
+except cinbag() entails a more detailed inbag record, which is
+needed to estimate binary node probabilities.")
+    }
     if(!calc_np) stop("node predictions must be re-calculated for random forest of type classification, set calc_np=T)
-                      error conditions: if(!calc_np && rfo$type='classification')")
+                      error conditions: if(!calc_np && rf.fit$type='classification')")
     
-    inbag = rfo$inbagCount
+    if(is.null(rf.fit$inbagCount)) inbag = rf.fit$inbag else inbag = rf.fit$inbagCount
   } else {
-    Y=rfo$y
-    inbag = rfo$inbag
+    Y=rf.fit$y
+    inbag = rf.fit$inbag
   }
   
   
   #preparing data, indice-correction could be moved to C++
   #a - This should be fethed from RF-object, flat interface
-  ld = rfo$forest$leftDaughter-1 #indice correction, first element is 0 in C++ and 1 in R.
+  ld = rf.fit$forest$leftDaughter-1 #indice correction, first element is 0 in C++ and 1 in R.
   storage.mode(ld) = "integer"
-  rd = rfo$forest$rightDaughter-1
+  rd = rf.fit$forest$rightDaughter-1
   storage.mode(rd) = "integer"
-  bv = rfo$forest$bestvar-1
+  bv = rf.fit$forest$bestvar-1
   storage.mode(bv) = "integer"
-  np = rfo$forest$nodepred
+  np = rf.fit$forest$nodepred
   storage.mode(np) = "double"
-  bs = rfo$forest$xbestsplit
+  bs = rf.fit$forest$xbestsplit
   storage.mode(bs) = "double"
   ib = inbag
   storage.mode(ib) = "integer"
   Yd = as.numeric(Y)
   storage.mode(Yd) = "double"
-  ot  = rfo$oob.times
+  ot  = rf.fit$oob.times
   storage.mode(ot) = "integer"
   
   
   ##recording types of variables
-  xlevels = unlist(lapply(rfo$forest$xlevels,length),use.names=F)
+  xlevels = unlist(lapply(rf.fit$forest$xlevels,length),use.names=F)
   xl = xlevels
   storage.mode(xl) = "integer"
   varsToBeConverted = xlevels>1
@@ -781,7 +732,7 @@ forestFloor = function(rfo,X,calc_np=FALSE) {
     #passed by number
     vars=dim(X)[2], 
     obs=dim(X)[1],             
-    ntree=rfo$ntree,
+    ntree=rf.fit$ntree,
     calculate_node_pred=calculate_node_pred,
     #passed by reference
     X=Xd,  #training data, double matrix [obs,vars] 
@@ -801,13 +752,13 @@ forestFloor = function(rfo,X,calc_np=FALSE) {
   
   
   #writing out list
-  imp = as.matrix(rfo$importance)[,1]
+  imp = as.matrix(rf.fit$importance)[,1]
   out = list(X=X,Y=Y,
              importance = imp,
              imp_ind = sort(imp,decreasing=TRUE,index.return=TRUE)$ix,
              FCmatrix = localIncrements
   )
-  class(out) = "forestFloor"
+  class(out) = "forestFloor_regression"
   return(out)
 }
 

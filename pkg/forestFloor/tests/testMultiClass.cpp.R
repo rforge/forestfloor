@@ -8,21 +8,19 @@ X = iris[,!names(iris) %in% "Species"]
 Y = iris[,"Species"]
 as.numeric(Y)
 rf = randomForest(X,Y,keep.forest=T,replace=F,keep.inbag=T,samp=15,ntree=100)
-ff = forestFloor_multiClass(rf,X)
+ff = forestFloor(rf,X,F,F)
 pred = sapply(1:3,function(i) apply(ff$FCarray[,,i],1,sum))+1/3
 rfPred = predict(rf,type="vote",norm.votes=T)
 rfPred[is.nan(rfPred)] = 1/3
 if(cor(as.vector(rfPred),as.vector(pred))^2<0.99) stop("fail testMultiClass")
 attributes(ff)
 args(forestFloor:::plot.forestFloor_multiClass)
-plot(ff,compute_GOF=T,plot_GOF=T,cex=.7,
+plot(ff,compute_GOF=F,plot_GOF=T,cex=.7,
      colLists=list(c("#FF0000A5"),
                    c("#00FF0050"),
                    c("#0000FF35")))
 
-show3d_forestFloor_multiClass(ff,1:2,3:4)
-library(rgl)
-decorate3d(xlab="1",ylab="2",zlab="3",add=T)
+show3d(ff,1:2,3:4,compute_GOF=T)
 
 # #plot all effect 2D only
 # pars = plot_K3(ff,Xvars=0,restore_par=F,zoom.fit=NULL,var.col=NULL,fig.cols=2,fig.rows=1,
