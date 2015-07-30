@@ -45,6 +45,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 #simulate data
 obs=2500
 vars = 6 
@@ -74,5 +75,6 @@ for(i in 1:6) {
 }
 par(pars) #restore graphicals
 
+}
 }
 

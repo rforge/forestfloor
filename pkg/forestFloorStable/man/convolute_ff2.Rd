@@ -55,6 +55,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 #simulate data
 obs=2500
 vars = 6 
@@ -84,5 +85,6 @@ plot3d(ff$X[,3],ff$X[,4],fc34_convoluted,
                .7*box.outliers(ff$X[,3]),        
                .7*box.outliers(ff$X[,4]))
        )
+}
 }
 

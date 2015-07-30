@@ -67,6 +67,7 @@ Soren Havelund Welling
 }
 
 \examples{
+\dontrun{
 #simulate data
 obs=5000
 vars = 6 
@@ -90,6 +91,6 @@ for(i in 1:vars) vec.plot(rfo2,X,i,zoom=1.5,limitY=TRUE)
 
 #plotvariable X3 and X4 with vec.plot
 vec.plot(rfo2,X,c(3,4),zoom=1,grid.lines=100)
-
+}
 }
 

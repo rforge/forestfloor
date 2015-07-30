@@ -1,14 +1,28 @@
 useDynLib(forestFloorStable)
-#exportPattern("^[[:alpha:]]+")
-#import(randomForest,trimTrees,rgl,FNN)
+
 importFrom(Rcpp, evalCpp)
-importFrom(randomForest, randomForest)
 importFrom(trimTrees, cinbag)
+import(kknn)
+
+importFrom(stats,
+           cor,
+           prcomp,
+           predict)
+
+importFrom(graphics,
+           par,
+           plot,
+           points)
+
+importFrom(grDevices,
+           rgb2hsv,
+           hsv)           
+
 import(rgl)
-importFrom(kknn,train.kknn)
-#importFrom(FNN,knn.reg)
+
 S3method(plot,forestFloor)
 S3method(print,forestFloor)
+
 export(forestFloor,
        plot.forestFloor,
        print.forestFloor,

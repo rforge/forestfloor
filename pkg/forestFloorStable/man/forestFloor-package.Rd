@@ -1,4 +1,5 @@
-\name{forestFloor-package}
+\name{forestFloorStable-package}
+\alias{forestFloorStablePackage}
 \docType{package}
 \title{
 forestFloor: visualize the randomForest topology
@@ -16,8 +17,8 @@ forrestFloor visualizes cross-validated topology-maps of randomForests(RF).
 \tabular{ll}{
 Package: \tab forestFloor\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2014-12-07\cr
+Version: \tab 1.5\cr
+Date: \tab 2014-07-30\cr
 License: \tab GPL-2\cr
 }
 }
@@ -31,7 +32,7 @@ Interpreting random forest classification models using a feature contribution me
 }
 
 \examples{
-
+\dontrun{
 rm(list=ls())
 library(forestFloorStable)
 #simulate data
@@ -57,26 +58,27 @@ plot(ff)
 
 #Non interacting functions are well displayed, whereas X3 and X4 are not
 #by applying different colourgradient, interactions reveal themself 
-Col = fcol(ff,3)
+Col = fcol(ff,3,orderByImportance=FALSE)
 plot(ff,col=Col) 
 
 #in 3D the interaction between X3 and X reveals itself completely
 show3d_new(ff,3:4,col=Col,plot.rgl=list(size=5)) 
 
 #although no interaction, a joined additive effect of X1 and X2
-Col = fcol(ff,1:2,X.m=FALSE,RGB=TRUE) #colour by FC-component FC1 and FC2 summed
+#colour by FC-component FC1 and FC2 summed
+Col = fcol(ff,1:2,X.m=FALSE,RGB=TRUE,orderByImportance=FALSE) 
 plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5)) 
 
 #...or two-way gradient is formed from FC-component X1 and X2.
-Col = fcol(ff,1:2,X.matrix=TRUE,alpha=0.8) 
+Col = fcol(ff,1:2,X.matrix=TRUE,alpha=0.8,orderByImportance=FALSE) 
 plot(ff,col=Col) 
 show3d_new(ff,1:2,col=Col,plot.rgl=list(size=5))
-
+}
 }
 
 
 \keyword{ multivariate }
 \keyword{ models }
-\keyword{ nonlinear }
-\keyword{ robust }
+\keyword{ non-linear }
+\keyword{ robust}
