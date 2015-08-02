@@ -63,6 +63,7 @@ rfo=randomForest(X,Y.class,keep.inbag = TRUE,sampsize=1500,ntree=500)
 ff = forestFloor(rfo,X)
 
 #plot
+Col = fcol(ff,1,alpha=.25,orderByImportance=FALSE) #farve bruges her bedst til kende forskel på klasser
 
 plot(ff,
      plot_GOF=T,
@@ -72,13 +73,9 @@ plot(ff,
      GOF_col=c("#3A3A3A80",
                "#FF3A3A80",
                "#3AFF3A80"))
-Col = fcol(ff,1,alpha=.25,orderByImportance=FALSE) #farve bruges her bedst til kende forskel på klasser
+
 plot(ff,plot_seq=1:6,
      colLists=list("#00000002", #farve vector til class1 (length 1 eller 2500)
                    "#00000002", #farve vector til class2 (length 1 eller 2500)
                    Col) #tredje  farves med fcol (length 1 eller 2500)
-     ,plot_GOF=T,
-     GOF_col=c("#3A3A3A10",
-               "#FF3A3A10",
-               "#3AFF3A80"))
-
+     ,plot_GOF=T)
